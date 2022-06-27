@@ -10,3 +10,17 @@ export interface TodoItem {
   dateCreated: Date
   tags: Tag[]
 }
+
+export interface TodoItemModel {
+  id: string
+  title: string
+  description: string | null
+  notes: string | null
+  is_completed: boolean
+  date_completed: string | null
+  time_completed: string | null
+  timezone_completed: string | null
+  date_created: string
+  time_created: string
+  timezone_created: string
+}

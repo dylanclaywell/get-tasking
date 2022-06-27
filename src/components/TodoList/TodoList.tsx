@@ -22,6 +22,7 @@ import { useTheme } from '../../contexts/Theme'
 
 import styles from './TodoList.module.css'
 import { invoke } from '@tauri-apps/api'
+import { TodoItem, TodoItemModel } from '../../types/TodoItem'
 
 function padDateComponent(component: number) {
   return component < 10 ? `0${component}` : component
@@ -55,70 +56,42 @@ function getDateFromComponents({
   return new Date(`${date}T${time}${timezone}`)
 }
 
-async function fetchTodoItems({ currentDate }: { currentDate: Date }) {
-  // const response = await query<QueryTodoItemsArgs, Query['todoItems']>(
-  //   getTodoItemsQuery,
-  //   {
-  //     input: {
-  //       dateCompleted: {
-  //         date: getDateStringWithoutTime(currentDate),
-  //       },
-  //       filters: {
-  //         overrideIncompleteItems: true,
-  //       },
-  //     },
-  //   }
-  // )
+async function fetchTodoItems({
+  currentDate,
+}: {
+  currentDate: Date
+}): Promise<TodoItem[]> {
+  const todoItems = JSON.parse(
+    await invoke('get_todo_items', {
+      dateCompleted: getDateStringWithoutTime(currentDate),
+    })
+  ) as TodoItemModel[]
 
-  console.log(getDateStringWithoutTime(currentDate))
-
-  const blah = await invoke('get_todo_items', {
-    dateCompleted: getDateStringWithoutTime(currentDate),
-  })
-
-  console.log(blah)
-
-  const response: {
-    data: {
-      todoItems: TodoItemGql[]
+  return todoItems.map((todoItem) => {
+    return {
+      id: todoItem.id,
+      title: todoItem.title,
+      description: todoItem.description,
+      dateCreated: getDateFromComponents({
+        date: todoItem.date_created,
+        time: todoItem.time_created,
+        timezone: todoItem.timezone_created,
+      }),
+      dateCompleted:
+        todoItem.date_completed &&
+        todoItem.time_completed &&
+        todoItem.timezone_completed
+          ? getDateFromComponents({
+              date: todoItem.date_completed,
+              time: todoItem.time_completed,
+              timezone: todoItem.timezone_completed,
+            })
+          : null,
+      notes: todoItem.notes,
+      tags: [],
+      isCompleted: todoItem.is_completed,
     }
-  } = {
-    data: {
-      todoItems: [
-        {
-          id: '1',
-          title: 'Buy milk',
-          description: '',
-          dateCreated: {
-            date: '2020-01-01',
-            time: '12:00',
-            timezone: '-08:00',
-          },
-          dateCompleted: {
-            date: '2020-01-01',
-            time: '12:00',
-            timezone: '-08:00',
-          },
-          notes: '',
-          tags: [
-            {
-              id: '1',
-              name: 'Groceries',
-              color: '#ff0000',
-            },
-          ],
-          isCompleted: false,
-        },
-      ],
-    },
-  }
-
-  if (!response || 'errors' in response) {
-    console.error('Error getting todo items')
-    return
-  }
-
-  return response
+  })
 }
 
 async function fetchTags({ uid }: { uid: string | null }) {
@@ -150,30 +123,11 @@ export default function TodoList() {
   const [theme] = useTheme()
   const [getCurrentDate, setCurrentDate] = createSignal<Date>(new Date())
   const [tagsData] = createResource(fetchTags)
-  const [todoItemsData, { mutate }] = createResource(
+  const [todoItems, { mutate }] = createResource(
     () => ({ currentDate: getCurrentDate() }),
     fetchTodoItems
   )
   const [getSelectedItemId, setSelectedItemId] = createSignal<string>()
-
-  const todoItems = () =>
-    todoItemsData()?.data.todoItems.map((item) => ({
-      ...item,
-      description: item.description ?? null,
-      notes: item.notes ?? null,
-      dateCompleted: item.dateCompleted
-        ? getDateFromComponents({
-            date: item.dateCompleted.date,
-            time: item.dateCompleted.time,
-            timezone: item.dateCompleted.timezone,
-          })
-        : null,
-      dateCreated: getDateFromComponents({
-        date: item.dateCreated.date,
-        time: item.dateCreated.time,
-        timezone: item.dateCreated.timezone,
-      }),
-    }))
 
   const getSelectedItem = () =>
     todoItems()?.find((item) => item.id === getSelectedItemId())
@@ -196,99 +150,74 @@ export default function TodoList() {
 
   const addTodoItem = async (title: string) => {
     const dateCreated = new Date()
-    // const response = await mutation<
-    //   MutationCreateTodoItemArgs,
-    //   Mutation['createTodoItem']
-    // >(createTodoItemMutation, {
-    //   input: {
-    //     title,
-    //     dateCreated: {
-    //       date: getDateStringWithoutTime(dateCreated),
-    //       time: getTimeStringWithoutDate(dateCreated),
-    //       timezone: getTimezoneStringWithoutDate(dateCreated),
-    //     },
-    //   },
-    // })
 
-    const response = {
-      data: {
-        createTodoItem: {
-          id: '1',
-          title,
-          description: '',
-          dateCreated: {
-            date: getDateStringWithoutTime(dateCreated),
-            time: getTimeStringWithoutDate(dateCreated),
-            timezone: getTimezoneStringWithoutDate(dateCreated),
-          },
-          dateCompleted: null,
-          notes: '',
-          tags: [],
-          isCompleted: false,
-        },
+    const createdTodoItem = JSON.parse(
+      await invoke('create_todo_item', {
+        title,
+        dateCreated: getDateStringWithoutTime(dateCreated),
+        timeCreated: getTimeStringWithoutDate(dateCreated),
+        timezoneCreated: getTimezoneStringWithoutDate(dateCreated),
+      })
+    ) as TodoItemModel
+
+    mutate((prev) => [
+      ...(prev ?? []),
+      {
+        ...createdTodoItem,
+        isCompleted: createdTodoItem.is_completed,
+        dateCreated: getDateFromComponents({
+          date: createdTodoItem.date_created,
+          time: createdTodoItem.time_created,
+          timezone: createdTodoItem.timezone_created,
+        }),
+        dateCompleted:
+          createdTodoItem.date_completed &&
+          createdTodoItem.time_completed &&
+          createdTodoItem.timezone_completed
+            ? getDateFromComponents({
+                date: createdTodoItem.date_completed,
+                time: createdTodoItem.time_completed,
+                timezone: createdTodoItem.timezone_completed,
+              })
+            : null,
+        tags: [],
       },
-    }
-
-    if (!response || 'errors' in response) {
-      console.error('Error creating todo item')
-      return
-    }
-
-    const createTodoItem = response.data.createTodoItem
-
-    mutate((prev) => ({
-      data: {
-        todoItems: [...(prev?.data.todoItems ?? []), createTodoItem],
-      },
-    }))
+    ])
   }
 
   const deleteTodoItem = (id: string) => {
-    mutate((prev) => ({
-      data: {
-        todoItems: prev?.data.todoItems.filter((item) => item.id !== id) ?? [],
-      },
-    }))
-    // mutation<MutationDeleteTodoItemArgs, Mutation['deleteTodoItem']>(
-    //   deleteTodoItemMutation,
-    //   {
-    //     id,
-    //   }
-    // )
+    mutate((prev) => prev?.filter((item) => item.id !== id) ?? [])
   }
 
-  const completeTodoItem = (id: string, isCompleted: boolean) => {
-    const dateCompleted = isCompleted ? null : getCurrentDate()
+  const toggleTodoItem = async (id: string, isCompleted: boolean) => {
+    const currentDate = getCurrentDate()
 
-    // mutation<MutationUpdateTodoItemArgs, TodoItemGql>(updateTodoItemMutation, {
-    //   input: {
-    //     id,
-    //     isCompleted: !isCompleted,
-    //     dateCompleted: dateCompleted
-    //       ? {
-    //           date: getDateStringWithoutTime(dateCompleted),
-    //           time: getTimeStringWithoutDate(dateCompleted),
-    //           timezone: getTimezoneStringWithoutDate(dateCompleted),
-    //         }
-    //       : null,
-    //   },
-    // })
+    if (isCompleted) {
+      await invoke('uncomplete_todo_item', {
+        id,
+      })
+    } else {
+      console.log({
+        date_completed: getDateStringWithoutTime(currentDate),
+        time_completed: getTimeStringWithoutDate(currentDate),
+        timezone_completed: getTimezoneStringWithoutDate(currentDate),
+      })
 
-    mutate((prev) => ({
-      data: {
-        todoItems: (prev?.data.todoItems ?? []).map((item) => ({
-          ...item,
-          isCompleted: item.id === id ? !item.isCompleted : item.isCompleted,
-          dateCompleted: dateCompleted
-            ? {
-                date: getDateStringWithoutTime(dateCompleted),
-                time: getTimeStringWithoutDate(dateCompleted),
-                timezone: getTimezoneStringWithoutDate(dateCompleted),
-              }
-            : null,
-        })),
-      },
-    }))
+      await invoke('complete_todo_item', {
+        id,
+        dateCompleted: getDateStringWithoutTime(currentDate),
+        timeCompleted: getTimeStringWithoutDate(currentDate),
+        timezoneCompleted: getTimezoneStringWithoutDate(currentDate),
+      })
+    }
+
+    mutate((prev) =>
+      (prev ?? []).map((item) => ({
+        ...item,
+        isCompleted: item.id === id ? !item.isCompleted : item.isCompleted,
+        dateCompleted: isCompleted ? null : currentDate,
+      }))
+    )
   }
 
   const updateTodoItem = debounce(
@@ -297,25 +226,21 @@ export default function TodoList() {
       fieldName: keyof MutationUpdateTodoItemArgs['input'],
       value: ValueOf<MutationUpdateTodoItemArgs['input']>
     ) => {
-      mutate((prev) => ({
-        data: {
-          todoItems: [
-            ...(prev?.data.todoItems ?? []).map((item) => ({
-              ...item,
-              ...(item.id === id && {
-                uid: '',
-                id,
-                [fieldName]:
-                  fieldName === 'tags' && Array.isArray(value)
-                    ? tagsData()?.data.tags.filter((t) =>
-                        value.some((v) => v.id === t.id)
-                      )
-                    : value,
-              }),
-            })),
-          ],
-        },
-      }))
+      mutate((prev) =>
+        (prev ?? []).map((item) => ({
+          ...item,
+          ...(item.id === id && {
+            uid: '',
+            id,
+            [fieldName]:
+              fieldName === 'tags' && Array.isArray(value)
+                ? tagsData()?.data.tags.filter((t) =>
+                    value.some((v) => v.id === t.id)
+                  )
+                : value,
+          }),
+        }))
+      )
 
       // mutation<MutationUpdateTodoItemArgs, TodoItemGql>(
       //   updateTodoItemMutation,
@@ -377,7 +302,7 @@ export default function TodoList() {
                     isCompleted={item().isCompleted}
                     tags={item().tags}
                     onDelete={deleteTodoItem}
-                    onComplete={completeTodoItem}
+                    onComplete={toggleTodoItem}
                     onClick={(id) => () => setSelectedItemId(id)}
                   />
                 )}
@@ -397,7 +322,7 @@ export default function TodoList() {
                       isCompleted={item().isCompleted}
                       tags={item().tags}
                       onDelete={deleteTodoItem}
-                      onComplete={completeTodoItem}
+                      onComplete={toggleTodoItem}
                       onClick={(id) => () => setSelectedItemId(id)}
                     />
                   )}
