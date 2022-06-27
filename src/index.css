@@ -1,0 +1,44 @@
+@import './styles/shadows.css';
+@import './styles/colors.css';
+@import './styles/rounded.css';
+
+@font-face {
+  font-family: Roboto;
+  font-weight: 100;
+  src: local('Roboto'),
+    url(./assets/fonts/Roboto/Roboto-Light.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: Roboto;
+  src: local('Roboto'),
+    url(./assets/fonts/Roboto/Roboto-Regular.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: Roboto;
+  font-weight: 500;
+  src: local('Roboto'),
+    url(./assets/fonts/Roboto/Roboto-Medium.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: Roboto;
+  font-weight: 600;
+  src: local('Roboto'),
+    url(./assets/fonts/Roboto/Roboto-Black.ttf) format('truetype');
+}
+
+body {
+  margin: 0;
+  font-family: 'Roboto';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: var(--default-text-color);
+  background: var(--default-background-color);
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
