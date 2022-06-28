@@ -22,7 +22,8 @@ import { useTheme } from '../../contexts/Theme'
 
 import styles from './TodoList.module.css'
 import { invoke } from '@tauri-apps/api'
-import { TodoItem, TodoItemModel } from '../../types/TodoItem'
+import { TodoItem, TodoItemModel } from '../../types/Models'
+import { UpdateTodoItemArgs } from '../../types/Operations'
 
 function padDateComponent(component: number) {
   return component < 10 ? `0${component}` : component
@@ -187,6 +188,8 @@ export default function TodoList() {
 
   const deleteTodoItem = (id: string) => {
     mutate((prev) => prev?.filter((item) => item.id !== id) ?? [])
+
+    void invoke('delete_todo_item', { id })
   }
 
   const toggleTodoItem = async (id: string, isCompleted: boolean) => {
@@ -223,8 +226,8 @@ export default function TodoList() {
   const updateTodoItem = debounce(
     (
       id: string,
-      fieldName: keyof MutationUpdateTodoItemArgs['input'],
-      value: ValueOf<MutationUpdateTodoItemArgs['input']>
+      fieldName: keyof UpdateTodoItemArgs,
+      value: ValueOf<UpdateTodoItemArgs>
     ) => {
       mutate((prev) =>
         (prev ?? []).map((item) => ({
@@ -232,25 +235,15 @@ export default function TodoList() {
           ...(item.id === id && {
             uid: '',
             id,
-            [fieldName]:
-              fieldName === 'tags' && Array.isArray(value)
-                ? tagsData()?.data.tags.filter((t) =>
-                    value.some((v) => v.id === t.id)
-                  )
-                : value,
+            [fieldName]: value,
           }),
         }))
       )
 
-      // mutation<MutationUpdateTodoItemArgs, TodoItemGql>(
-      //   updateTodoItemMutation,
-      //   {
-      //     input: {
-      //       id,
-      //       [fieldName]: value,
-      //     },
-      //   }
-      // )
+      void invoke('update_todo_item', {
+        id,
+        [fieldName]: value,
+      })
     },
     500
   )

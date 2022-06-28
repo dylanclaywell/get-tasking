@@ -25,10 +25,25 @@ pub fn complete_todo_item(
   time_completed: String,
   timezone_completed: String,
 ) {
-  todo_item::complete_todo_item(id, date_completed, time_completed, timezone_completed);
+  todo_item::complete(id, date_completed, time_completed, timezone_completed);
 }
 
 #[tauri::command]
 pub fn uncomplete_todo_item(id: String) {
-  todo_item::uncomplete_todo_item(id);
+  todo_item::uncomplete(id);
+}
+
+#[tauri::command]
+pub fn update_todo_item(
+  id: String,
+  title: Option<String>,
+  description: Option<String>,
+  notes: Option<String>,
+) {
+  todo_item::update(id, title, description, notes);
+}
+
+#[tauri::command]
+pub fn delete_todo_item(id: String) {
+  todo_item::delete(id);
 }

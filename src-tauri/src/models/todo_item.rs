@@ -42,73 +42,6 @@ fn create_todo_items_folder() {
   connection.execute(statement).unwrap();
 }
 
-// pub fn create(folder: Folder) -> Folder {
-//   if !database::table_exists(String::from("folders")) {
-//     create_todo_items_folder();
-//   }
-
-//   let connection = sqlite::open("./database.db").unwrap();
-//   let mut statement = connection
-//     .prepare(
-//       "
-//         insert into folders (
-//           id,
-//           name
-//         ) values (
-//           ?,
-//           ?
-//         )
-//       ",
-//     )
-//     .unwrap();
-
-//   statement.bind(1, &*folder.id).unwrap();
-//   statement.bind(2, &*folder.name).unwrap();
-
-//   statement.next().unwrap();
-
-//   println!("Creating folder");
-//   println!("  - id: {}", folder.id);
-//   println!("  - name: {}", folder.name);
-
-//   return folder;
-// }
-
-// pub fn delete(id: String) {
-//   if !database::table_exists(String::from("folders")) {
-//     create_todo_items_folder();
-//   }
-
-//   let connection = sqlite::open("./database.db").unwrap();
-
-//   let mut delete_folder_notes_statement = connection
-//     .prepare(
-//       "
-//       delete from notes where folderId = ?
-//     ",
-//     )
-//     .unwrap();
-
-//   delete_folder_notes_statement.bind(1, &*id).unwrap();
-
-//   delete_folder_notes_statement.next().unwrap();
-
-//   let mut delete_folder_statement = connection
-//     .prepare(
-//       "
-//         delete from folders where id = ?
-//       ",
-//     )
-//     .unwrap();
-
-//   delete_folder_statement.bind(1, &*id).unwrap();
-
-//   delete_folder_statement.next().unwrap();
-
-//   println!("Deleting folder");
-//   println!("  - id: {}", id);
-// }
-
 pub fn get_all(date_completed: String) -> Vec<TodoItem> {
   let connection = sqlite::open("./database.db").unwrap();
 
@@ -235,7 +168,7 @@ pub fn create(
   todo_item
 }
 
-pub fn complete_todo_item(
+pub fn complete(
   id: String,
   date_completed: String,
   time_completed: String,
@@ -274,7 +207,7 @@ pub fn complete_todo_item(
   println!("  - timezone completed: {}", timezone_completed);
 }
 
-pub fn uncomplete_todo_item(id: String) {
+pub fn uncomplete(id: String) {
   if !database::table_exists(String::from("todoItems")) {
     create_todo_items_folder();
   }
@@ -299,5 +232,93 @@ pub fn uncomplete_todo_item(id: String) {
   statement.next().unwrap();
 
   println!("Uncompleting todo item");
+  println!("  - id: {}", id);
+}
+
+pub fn update(
+  id: String,
+  title: Option<String>,
+  description: Option<String>,
+  notes: Option<String>,
+) {
+  if !database::table_exists(String::from("todoItems")) {
+    create_todo_items_folder();
+  }
+
+  let mut conditions: Vec<String> = Vec::new();
+
+  let parameter_mapping = vec![
+    (
+      String::from("title"),
+      title.as_ref().map(|title| String::from(title)),
+    ),
+    (
+      String::from("description"),
+      description
+        .as_ref()
+        .map(|description| String::from(description)),
+    ),
+    (
+      String::from("notes"),
+      notes.as_ref().map(|notes| String::from(notes)),
+    ),
+  ];
+
+  let mut bind_params: Vec<(String, String)> = Vec::new();
+
+  for (key, value) in parameter_mapping {
+    if !value.is_none() {
+      conditions.push(format!("{} = :{}", key, key));
+      bind_params.push((key, value.unwrap()));
+    }
+  }
+
+  let mut sql = vec![String::from("update todoItems set")];
+  sql.push(conditions.join(" "));
+  sql.push(String::from("where id = :id"));
+
+  let connection = sqlite::open("./database.db").unwrap();
+  let mut statement = connection.prepare(sql.join(" ")).unwrap();
+
+  statement.bind_by_name(":id", &*id).unwrap();
+
+  for (key, value) in bind_params {
+    statement
+      .bind_by_name(format!(":{}", &key).as_str(), &*value)
+      .unwrap();
+  }
+
+  statement.next().unwrap();
+
+  println!("Updating todo item");
+  println!("  - id: {}", id);
+  println!("  - title: {}", title.unwrap_or(String::from("<none>")));
+  println!(
+    "  - description: {}",
+    description.unwrap_or(String::from("<none>"))
+  );
+  println!("  - notes: {}", notes.unwrap_or(String::from("<none>")));
+}
+
+pub fn delete(id: String) {
+  if !database::table_exists(String::from("todoItems")) {
+    create_todo_items_folder();
+  }
+
+  let connection = sqlite::open("./database.db").unwrap();
+  let mut statement = connection
+    .prepare(
+      "
+        delete from todoItems
+        where id = ?
+      ",
+    )
+    .unwrap();
+
+  statement.bind(1, &*id).unwrap();
+
+  statement.next().unwrap();
+
+  println!("Deleting todo item");
   println!("  - id: {}", id);
 }

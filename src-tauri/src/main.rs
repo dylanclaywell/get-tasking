@@ -14,6 +14,8 @@ fn main() {
       controllers::todo_items::create_todo_item,
       controllers::todo_items::complete_todo_item,
       controllers::todo_items::uncomplete_todo_item,
+      controllers::todo_items::update_todo_item,
+      controllers::todo_items::delete_todo_item,
     ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");

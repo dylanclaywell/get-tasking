@@ -1,15 +1,15 @@
 import { createEffect, createSignal, onCleanup } from 'solid-js'
 import { format } from 'date-fns'
 
-import { TodoItem } from '../../types/TodoItem'
+import { TodoItem } from '../../types/Models'
 import IconButton from '../IconButton'
 import TextField from '../TextField'
 import Select, { Option } from '../Select'
 import { ValueOf } from '../../utils/ValueOf'
 import { useTheme } from '../../contexts/Theme'
-import { MutationUpdateTodoItemArgs } from '../../generated/graphql'
 
 import styles from './TodoEditPanel.module.css'
+import { UpdateTodoItemArgs } from '../../types/Operations'
 
 interface Tag {
   id: string
@@ -22,8 +22,8 @@ export interface Props {
   tags: Tag[]
   updateTodoItem: (
     id: string,
-    fieldName: keyof MutationUpdateTodoItemArgs['input'],
-    value: ValueOf<MutationUpdateTodoItemArgs['input']>
+    fieldName: keyof UpdateTodoItemArgs,
+    value: ValueOf<UpdateTodoItemArgs>
   ) => void
   onClose: () => void
 }
@@ -175,11 +175,11 @@ export default function TodoEditPanel(props: Props) {
             value: tag.id,
           }))}
           onChange={async (newValues: Option<string>[]) => {
-            props.updateTodoItem(
-              props.item.id,
-              'tags',
-              newValues.map((v) => ({ id: v.value }))
-            )
+            // props.updateTodoItem(
+            //   props.item.id,
+            //   'tags',
+            //   newValues.map((v) => ({ id: v.value }))
+            // )
           }}
           values={props.item.tags.map((tag) => tag.id)}
         />
