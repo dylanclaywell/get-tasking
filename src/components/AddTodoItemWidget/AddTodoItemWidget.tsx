@@ -7,6 +7,7 @@ import Fab from '../Fab'
 import { useTheme } from '../../contexts/Theme'
 
 import styles from './AddTodoItemWidget.module.css'
+import Icon from '../Icon'
 
 export interface Props {
   addTodoItem: (value: string) => void
@@ -123,7 +124,7 @@ export default function AddTodoItemWidget(props: Props) {
         </>
       </Show>
       <Show when={!getInputIsOpen()}>
-        <Fab onClick={() => setInputIsOpen(true)} icon="fa-solid fa-plus" />
+        <Fab onClick={() => setInputIsOpen(true)} icon={<Icon name="plus" />} />
       </Show>
     </>
   )

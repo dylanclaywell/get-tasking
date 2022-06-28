@@ -263,32 +263,35 @@ export default function TodoList() {
             setCurrentDate(date)
           }}
         />
-        <Suspense
-          fallback={
-            <div class={styles['lists']}>
-              <div class={styles['incomplete-list']}>
-                <h2 class={styles['list-heading']}>Todo</h2>
-                <SkeletonTodoCard />
-                <SkeletonTodoCard />
-                <SkeletonTodoCard />
-              </div>
-              <div class={styles['complete-list']}>
-                <h2 class={styles['list-heading']}>Done</h2>
-                <SkeletonTodoCard />
-                <SkeletonTodoCard />
-                <SkeletonTodoCard />
-              </div>
-            </div>
-          }
-        >
-          <div class={styles['lists']}>
-            <div class={styles['incomplete-list']}>
-              <h2 class={styles['list-heading']}>Todo</h2>
-              <Index each={getIncompleteItems()}>
+
+        <div class={styles['lists']}>
+          <div class={styles['incomplete-list']}>
+            <h2 class={styles['list-heading']}>Todo</h2>
+            <Index each={getIncompleteItems()}>
+              {(item, index) => (
+                <TodoCard
+                  style={{
+                    'animation-duration': `${index * 20 + 300}ms`,
+                  }}
+                  id={item().id}
+                  title={item().title}
+                  isCompleted={item().isCompleted}
+                  tags={item().tags}
+                  onDelete={deleteTodoItem}
+                  onComplete={toggleTodoItem}
+                  onClick={(id) => () => setSelectedItemId(id)}
+                />
+              )}
+            </Index>
+          </div>
+          {getCompletedItems()?.length && (
+            <div class={styles['complete-list']}>
+              <h2 class={styles['list-heading']}>Done</h2>
+              <Index each={getCompletedItems()}>
                 {(item, index) => (
                   <TodoCard
                     style={{
-                      'animation-duration': `${index * 20 + 300}ms`,
+                      'animation-duration': `${index * 10 + 300}ms`,
                     }}
                     id={item().id}
                     title={item().title}
@@ -301,29 +304,8 @@ export default function TodoList() {
                 )}
               </Index>
             </div>
-            {getCompletedItems()?.length && (
-              <div class={styles['complete-list']}>
-                <h2 class={styles['list-heading']}>Done</h2>
-                <Index each={getCompletedItems()}>
-                  {(item, index) => (
-                    <TodoCard
-                      style={{
-                        'animation-duration': `${index * 10 + 300}ms`,
-                      }}
-                      id={item().id}
-                      title={item().title}
-                      isCompleted={item().isCompleted}
-                      tags={item().tags}
-                      onDelete={deleteTodoItem}
-                      onComplete={toggleTodoItem}
-                      onClick={(id) => () => setSelectedItemId(id)}
-                    />
-                  )}
-                </Index>
-              </div>
-            )}
-          </div>
-        </Suspense>
+          )}
+        </div>
         <AddTodoItemWidget
           addTodoItem={addTodoItem}
           canOpen={!getSelectedItem()}

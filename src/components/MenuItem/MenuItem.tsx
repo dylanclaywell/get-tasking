@@ -4,13 +4,14 @@ import classnames from 'classnames'
 import { useTheme } from '../../contexts/Theme'
 
 import styles from './MenuItem.module.css'
+import Icon, { IconName } from '../Icon'
 
 export interface Props {
   children: JSX.Element
   classes?: string
   onClick?: JSX.EventHandler<HTMLDivElement, MouseEvent>
   isRounded?: boolean
-  icon?: string
+  icon?: IconName
 }
 
 export default function MenuItem(props: Props) {
@@ -25,7 +26,10 @@ export default function MenuItem(props: Props) {
       })}
     >
       {props.icon ? (
-        <i class={classnames(props.icon, styles['menu-item-icon'])}></i>
+        <Icon
+          name={props.icon}
+          className={classnames(styles['menu-item-icon'])}
+        />
       ) : null}
       {props.children}
     </div>

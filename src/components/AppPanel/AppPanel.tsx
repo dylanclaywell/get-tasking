@@ -1,6 +1,7 @@
 import { useTheme } from '../../contexts/Theme'
 import MenuItem from '../MenuItem'
 import type { AppContext } from '../../pages/main'
+import Icon from '../Icon'
 
 import styles from './AppPanel.module.css'
 
@@ -20,14 +21,14 @@ export default function AppPanel(props: Props) {
     >
       <div>
         <MenuItem
-          icon="fa-solid fa-check"
+          icon="check"
           isRounded={false}
           onClick={() => props.setAppContext('todo')}
         >
           Todo
         </MenuItem>
         <MenuItem
-          icon="fa-solid fa-gear"
+          icon="settings"
           isRounded={false}
           onClick={() => props.setAppContext('settings')}
         >
