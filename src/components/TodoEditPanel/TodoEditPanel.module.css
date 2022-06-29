@@ -1,17 +1,25 @@
 .todo-edit-panel {
-  padding: 1rem;
-  position: absolute;
-  transform: translateX(0%);
+  padding: 1rem 0rem;
+  /* padding: 1rem; */
+  /* position: absolute; */
+  /* transform: translateX(0%); */
+  width: 0;
   background-color: white;
   top: 0;
   right: 0;
   bottom: 0;
-  box-shadow: var(--shadow-lg);
-  animation-duration: 300ms;
-  animation-name: slidein;
+  /* box-shadow: var(--shadow-lg); */
+
   overflow-x: hidden;
   overflow-y: auto;
   left: calc(100vw - 20rem);
+}
+
+.todo-edit-panel--open {
+  animation-duration: 300ms;
+  animation-name: slidein;
+  padding: 1rem;
+  width: 20rem;
 }
 
 .todo-edit-panel.dark {
@@ -30,22 +38,26 @@
 @keyframes slidein {
   from {
     overflow: hidden;
-    transform: translate(100%);
+    padding: 1rem 0rem;
+    width: 0;
   }
 
   to {
-    transform: translateX(0%);
+    padding: 1rem;
+    width: 20rem;
   }
 }
 
 @keyframes slideout {
   from {
     overflow: hidden;
-    transform: translateX(0%);
+    padding: 1rem;
+    width: 20rem;
   }
 
   to {
-    transform: translate(100%);
+    padding: 1rem 0rem;
+    width: 0;
   }
 }
 

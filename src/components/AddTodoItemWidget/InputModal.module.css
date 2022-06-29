@@ -1,0 +1,60 @@
+.input-modal__overlay {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  transition: 300ms;
+  background-color: rgba(0, 0, 0, 0.5);
+  visibility: hidden;
+  opacity: 0;
+  z-index: 1;
+}
+
+.input-modal__overlay--open {
+  visibility: visible;
+  opacity: 1;
+}
+
+.input-modal__input-container {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 40%;
+  animation-name: input-enter;
+  animation-duration: 300ms;
+  max-width: 20rem;
+  overflow: hidden;
+  z-index: 2;
+  box-shadow: var(--shadow-md);
+  border-radius: var(--rounded-md);
+}
+
+.input-modal__input-container--leaving {
+  box-shadow: none;
+  animation-name: input-leave;
+  animation-duration: 300ms;
+}
+
+@keyframes input-enter {
+  from {
+    width: 0rem;
+  }
+
+  to {
+    width: 40%;
+  }
+}
+
+@keyframes input-leave {
+  from {
+    width: 40%;
+  }
+
+  to {
+    width: 0rem;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}

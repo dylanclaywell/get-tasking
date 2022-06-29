@@ -200,12 +200,6 @@ export default function TodoList() {
         id,
       })
     } else {
-      console.log({
-        date_completed: getDateStringWithoutTime(currentDate),
-        time_completed: getTimeStringWithoutDate(currentDate),
-        timezone_completed: getTimezoneStringWithoutDate(currentDate),
-      })
-
       await invoke('complete_todo_item', {
         id,
         dateCompleted: getDateStringWithoutTime(currentDate),
@@ -311,14 +305,17 @@ export default function TodoList() {
           canOpen={!getSelectedItem()}
         />
       </div>
-      {getSelectedItem() && (
+      {
         <TodoEditPanel
+          isOpen={Boolean(getSelectedItem())}
           tags={tagsData()?.data.tags ?? []}
-          item={getSelectedItem()!}
+          item={getSelectedItem() ?? undefined}
           updateTodoItem={updateTodoItem}
-          onClose={() => setSelectedItemId(undefined)}
+          onClose={() => {
+            setSelectedItemId(undefined)
+          }}
         />
-      )}
+      }
     </>
   )
 }

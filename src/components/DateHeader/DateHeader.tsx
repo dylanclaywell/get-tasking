@@ -2,6 +2,7 @@ import { useTheme } from '../../contexts/Theme'
 import { format, sub, add } from 'date-fns'
 
 import styles from './DateHeader.module.css'
+import Icon from '../Icon'
 
 export interface Props {
   currentDate: Date
@@ -25,8 +26,8 @@ export default function DateHeader(props: Props) {
         classList={{ [styles.dark]: theme()?.theme === 'dark' }}
         onClick={shiftLeft}
       >
-        <i class="fa-solid fa-chevron-left" />
-        {format(sub(props.currentDate, { days: 1 }), 'LLLL do')}
+        <Icon name="chevron-left" />
+        {/* {format(sub(props.currentDate, { days: 1 }), 'LLLL do')} */}
       </button>
       <div class={styles['date-header-current-day-container']}>
         <span
@@ -44,8 +45,8 @@ export default function DateHeader(props: Props) {
         classList={{ [styles.dark]: theme()?.theme === 'dark' }}
         onClick={shiftRight}
       >
-        {format(add(props.currentDate, { days: 1 }), 'LLLL do')}
-        <i class="fa-solid fa-chevron-right" />
+        {/* {format(add(props.currentDate, { days: 1 }), 'LLLL do')} */}
+        <Icon name="chevron-right" />
       </button>
     </div>
   )

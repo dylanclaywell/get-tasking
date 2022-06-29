@@ -1,13 +1,9 @@
 import { createSignal, createEffect, onCleanup, Show } from 'solid-js'
-import classnames from 'classnames'
 
-import Switch from '../Switch'
-import TextField from '../TextField'
 import Fab from '../Fab'
 import { useTheme } from '../../contexts/Theme'
-
-import styles from './AddTodoItemWidget.module.css'
 import Icon from '../Icon'
+import InputModal from './InputModal'
 
 export interface Props {
   addTodoItem: (value: string) => void
@@ -15,7 +11,6 @@ export interface Props {
 }
 
 export default function AddTodoItemWidget(props: Props) {
-  const [getTheme] = useTheme()
   const [getInputRef, setInputRef] = createSignal<HTMLInputElement>()
   const [getInputValue, setInputValue] = createSignal('')
   const [getInputIsOpen, setInputIsOpen] = createSignal(false)
@@ -37,6 +32,8 @@ export default function AddTodoItemWidget(props: Props) {
     }
 
     if (e.key === 'Escape') {
+      e.preventDefault()
+      e.stopImmediatePropagation()
       closeAddTodoItemPrompt()
     }
   }
@@ -44,6 +41,7 @@ export default function AddTodoItemWidget(props: Props) {
   const handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === 'a' && !getInputIsOpen() && props.canOpen) {
       e.preventDefault()
+      e.stopImmediatePropagation()
       setInputIsOpen(true)
     }
 
@@ -69,62 +67,21 @@ export default function AddTodoItemWidget(props: Props) {
 
   return (
     <>
-      <Show when={getInputIsOpen()}>
-        <>
-          <div
-            class={classnames(styles['overlay'], {
-              [styles['overlay-leave']]: getInputIsExiting(),
-            })}
-            onClick={() => setInputIsExiting(true)}
-          />
-          <div
-            class={styles['add-item-container']}
-            onAnimationEnd={() => {
-              if (getInputIsExiting()) {
-                setInputIsOpen(false)
-                setInputIsExiting(false)
-                setInputValue('')
-              }
-            }}
-          >
-            {!getInputIsExiting() && (
-              <div
-                class={styles['switch-container']}
-                classList={{
-                  [styles.dark]: getTheme()?.theme === 'dark',
-                }}
-              >
-                <Switch
-                  isChecked={getUseMultipleEntries()}
-                  onClick={() =>
-                    setUseMultipleEntries(!getUseMultipleEntries())
-                  }
-                  label="Enter multiple"
-                />
-              </div>
-            )}
-            <TextField
-              fullWidth
-              forwardRef={(el) => setInputRef(el)}
-              classes={{
-                root: classnames(styles['text-field-container'], {
-                  [styles['text-field-container-leave']]: getInputIsExiting(),
-                }),
-                input: classnames(styles['text-field-input'], {
-                  [styles['text-field-input-leave']]: getInputIsExiting(),
-                }),
-              }}
-              label={getInputIsExiting() ? '' : 'Title'}
-              value={getInputValue()}
-              onChange={(e) => {
-                setInputValue(e.currentTarget.value ?? '')
-              }}
-            />
-          </div>
-        </>
-      </Show>
+      <InputModal
+        isExiting={getInputIsExiting()}
+        setInputRef={(el) => setInputRef(el)}
+        isOpen={getInputIsOpen()}
+        onChange={(e) => setInputValue(e.currentTarget.value ?? '')}
+        setIsExiting={setInputIsExiting}
+        setIsOpen={setInputIsOpen}
+        value={getInputValue()}
+      />
       <Show when={!getInputIsOpen()}>
-        <Fab onClick={() => setInputIsOpen(true)} icon={<Icon name="plus" />} />
+        <Fab
+          relativeToParent
+          onClick={() => setInputIsOpen(true)}
+          icon={<Icon name="plus" />}
+        />
       </Show>
     </>
   )

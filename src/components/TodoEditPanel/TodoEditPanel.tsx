@@ -18,7 +18,7 @@ interface Tag {
 }
 
 export interface Props {
-  item: TodoItem
+  item: TodoItem | undefined
   tags: Tag[]
   updateTodoItem: (
     id: string,
@@ -26,6 +26,7 @@ export interface Props {
     value: ValueOf<UpdateTodoItemArgs>
   ) => void
   onClose: () => void
+  isOpen: boolean
 }
 
 const rootFontSize = parseInt(
@@ -47,6 +48,7 @@ export default function TodoEditPanel(props: Props) {
 
   const closePanel = () => {
     if (getIsClosing() === true) {
+      setIsClosing(false)
       props.onClose()
     }
   }
@@ -56,7 +58,7 @@ export default function TodoEditPanel(props: Props) {
   }
 
   const handleKeyDown = (e: KeyboardEvent) => {
-    if (e.key === 'Escape') {
+    if (e.key === 'Escape' && props.isOpen) {
       setIsClosing(true)
     }
   }
@@ -93,6 +95,7 @@ export default function TodoEditPanel(props: Props) {
     <div
       class={styles['todo-edit-panel']}
       classList={{
+        [styles['todo-edit-panel--open']]: props.isOpen,
         [styles['todo-edit-panel-closing']]: getIsClosing(),
         [styles.dark]: theme().theme === 'dark',
       }}
@@ -114,10 +117,10 @@ export default function TodoEditPanel(props: Props) {
       </div>
       <div class={styles['inputs-container']}>
         <TextField
-          value={props.item.title}
+          value={props.item?.title ?? ''}
           onChange={(e) =>
             props.updateTodoItem(
-              props.item.id,
+              props.item?.id ?? '',
               'title',
               e.currentTarget.value ?? ''
             )
@@ -126,10 +129,10 @@ export default function TodoEditPanel(props: Props) {
           label="Title"
         />
         <TextField
-          value={props.item.description ?? ''}
+          value={props.item?.description ?? ''}
           onChange={(e) =>
             props.updateTodoItem(
-              props.item.id,
+              props.item?.id ?? '',
               'description',
               e.currentTarget.value ?? ''
             )
@@ -138,14 +141,18 @@ export default function TodoEditPanel(props: Props) {
           label="Description"
         />
         <TextField
-          value={format(props.item.dateCreated, 'yyyy-MM-dd hh:mm a') ?? ''}
+          value={
+            props.item
+              ? format(props.item.dateCreated, 'yyyy-MM-dd hh:mm a')
+              : ''
+          }
           fullWidth
           isDisabled
           label="Date Created"
         />
         <TextField
           value={
-            props.item.dateCompleted
+            props.item?.dateCompleted
               ? format(props.item.dateCompleted, 'yyyy-MM-dd hh:mm a')
               : ''
           }
@@ -154,12 +161,12 @@ export default function TodoEditPanel(props: Props) {
           label="Date Completed"
         />
         <TextField
-          value={props.item.notes ?? ''}
+          value={props.item?.notes ?? ''}
           fullWidth
           label="Notes"
           onChange={(e) =>
             props.updateTodoItem(
-              props.item.id,
+              props.item?.id ?? '',
               'notes',
               e.currentTarget.value ?? ''
             )
@@ -181,7 +188,7 @@ export default function TodoEditPanel(props: Props) {
             //   newValues.map((v) => ({ id: v.value }))
             // )
           }}
-          values={props.item.tags.map((tag) => tag.id)}
+          values={props.item?.tags.map((tag) => tag.id) ?? []}
         />
       </div>
     </div>

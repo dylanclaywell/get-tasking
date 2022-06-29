@@ -17,6 +17,7 @@ interface BaseProps {
   fullWidth?: boolean
   isDisabled?: boolean
   type?: 'password'
+  inputProps?: Partial<HTMLInputElement>
 }
 
 interface TextFieldProps {

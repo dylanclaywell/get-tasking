@@ -8,9 +8,11 @@ import Settings from './Settings'
 import Type from './Type'
 
 import styles from './Icon.module.css'
+import ChevronLeft from './ChevronLeft'
 
 export type IconName =
   | 'chevron-right'
+  | 'chevron-left'
   | 'chevrons-down'
   | 'chevrons-up'
   | 'plus-circle'
@@ -42,6 +44,8 @@ function getIcon(
   switch (name) {
     case 'chevron-right':
       return <ChevronRight {...props} />
+    case 'chevron-left':
+      return <ChevronLeft {...props} />
     case 'plus-circle':
       return <PlusCircle {...props} />
     case 'plus':

@@ -31,7 +31,7 @@
 }
 
 .hover:hover {
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-md);
 }
 
 .todo-card-done {

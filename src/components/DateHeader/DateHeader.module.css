@@ -29,6 +29,8 @@
   border: none;
   cursor: pointer;
   font-size: 1rem;
+  display: flex;
+  align-items: center;
 }
 
 .date-header-date-button.dark {
