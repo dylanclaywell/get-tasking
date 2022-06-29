@@ -1,4 +1,10 @@
-import { createResource, createSignal, Index, Suspense } from 'solid-js'
+import {
+  createEffect,
+  createResource,
+  createSignal,
+  Index,
+  Suspense,
+} from 'solid-js'
 import { format } from 'date-fns'
 import { debounce } from 'debounce'
 
@@ -134,20 +140,29 @@ export default function TodoList() {
     todoItems()?.find((item) => item.id === getSelectedItemId())
 
   const getIncompleteItems = () =>
-    todoItems()?.filter((item) => !item.isCompleted)
+    todoItems()
+      ?.filter((item) => !item.isCompleted)
+      .sort((a, b) => {
+        return a.dateCreated.getTime() - b.dateCreated.getTime()
+      })
   const getCompletedItems = () =>
-    todoItems()?.filter((item) => {
-      const dateCompleted = item.dateCompleted
-        ? new Date(item.dateCompleted)
-        : undefined
+    todoItems()
+      ?.filter((item) => {
+        const dateCompleted = item.dateCompleted
+          ? new Date(item.dateCompleted)
+          : undefined
 
-      return (
-        item.isCompleted &&
-        dateCompleted &&
-        getDateStringWithoutTime(dateCompleted) ===
-          getDateStringWithoutTime(getCurrentDate())
-      )
-    })
+        return (
+          item.isCompleted &&
+          dateCompleted &&
+          getDateStringWithoutTime(dateCompleted) ===
+            getDateStringWithoutTime(getCurrentDate())
+        )
+      })
+      .sort((a, b) => {
+        // Forcing non-null assertion because the filter should ensure the dateCompleted is not null
+        return a.dateCompleted!.getTime() - b.dateCompleted!.getTime()
+      })
 
   const addTodoItem = async (title: string) => {
     const dateCreated = new Date()
@@ -195,6 +210,8 @@ export default function TodoList() {
   const toggleTodoItem = async (id: string, isCompleted: boolean) => {
     const currentDate = getCurrentDate()
 
+    console.log(id, isCompleted)
+
     if (isCompleted) {
       await invoke('uncomplete_todo_item', {
         id,
@@ -212,7 +229,7 @@ export default function TodoList() {
       (prev ?? []).map((item) => ({
         ...item,
         isCompleted: item.id === id ? !item.isCompleted : item.isCompleted,
-        dateCompleted: isCompleted ? null : currentDate,
+        dateCompleted: item.id === id && isCompleted ? null : currentDate,
       }))
     )
   }

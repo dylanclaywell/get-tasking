@@ -23,17 +23,17 @@ fn create_todo_items_folder() {
   let statement = String::from(
     "
       CREATE TABLE todoItems (
-        id	INTEGER NOT NULL UNIQUE,
-        title	TEXT NOT NULL,
-        description	TEXT,
-        notes	TEXT,
-        isCompleted	TEXT NOT NULL CHECK(isCompleted in ('true', 'false')),
-        dateCompleted	TEXT,
-        timeCompleted	TEXT,
-        timezoneCompleted	TEXT,
-        dateCreated	TEXT NOT NULL,
-        timeCreated	TEXT NOT NULL,
-        timezoneCreated	TEXT NOT NULL,
+        id TEXT NOT NULL UNIQUE,
+        title TEXT NOT NULL,
+        description TEXT,
+        notes TEXT,
+        isCompleted TEXT NOT NULL CHECK(isCompleted in ('true', 'false')),
+        dateCompleted TEXT,
+        timeCompleted TEXT,
+        timezoneCompleted TEXT,
+        dateCreated TEXT NOT NULL,
+        timeCreated TEXT NOT NULL,
+        timezoneCreated TEXT NOT NULL,
         PRIMARY KEY(id)
       );
     ",
@@ -122,12 +122,14 @@ pub fn create(
     .prepare(
       "
         insert into todoItems (
+          id,
           title,
           isCompleted,
           dateCreated,
           timeCreated,
           timezoneCreated
         ) values (
+          ?,
           ?,
           'false',
           ?,
@@ -138,10 +140,13 @@ pub fn create(
     )
     .unwrap();
 
-  statement.bind(1, &*title).unwrap();
-  statement.bind(2, &*date_created).unwrap();
-  statement.bind(3, &*time_created).unwrap();
-  statement.bind(4, &*timezone_created).unwrap();
+  println!("{}", id);
+
+  statement.bind(1, &*id).unwrap();
+  statement.bind(2, &*title).unwrap();
+  statement.bind(3, &*date_created).unwrap();
+  statement.bind(4, &*time_created).unwrap();
+  statement.bind(5, &*timezone_created).unwrap();
 
   statement.next().unwrap();
 
