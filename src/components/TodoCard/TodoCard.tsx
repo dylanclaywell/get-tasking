@@ -1,4 +1,4 @@
-import { createSignal, JSX } from 'solid-js'
+import { createSignal, JSX, onCleanup } from 'solid-js'
 import classnames from 'classnames'
 
 import styles from './TodoCard.module.css'
@@ -6,6 +6,7 @@ import Menu from '../Menu'
 import MenuItem from '../MenuItem'
 import IconButton from '../IconButton'
 import { useTheme } from '../../contexts/Theme'
+import { useKeyboardHandler } from '../../contexts/App'
 
 interface Tag {
   id: string
@@ -85,7 +86,7 @@ export default function TodoCard(props: Props) {
       </div>
       <IconButton
         ref={(el) => setMenuRef(el)}
-        icon="fa-solid fa-ellipsis-vertical"
+        icon="more-vertical"
         onClick={(e) => {
           e.stopImmediatePropagation()
           setMenuIsOpen(true)
@@ -94,11 +95,16 @@ export default function TodoCard(props: Props) {
       <Menu
         anchor={getMenuRef()}
         isOpen={getMenuIsOpen()}
-        onClose={() => setMenuIsOpen(false)}
+        onClose={() => {
+          setMenuIsOpen(false)
+        }}
       >
         <MenuItem
           classes={styles['delete-button']}
-          onClick={() => props.onDelete(props.id)}
+          onClick={() => {
+            props.onDelete(props.id)
+            setMenuIsOpen(false)
+          }}
         >
           Delete
         </MenuItem>

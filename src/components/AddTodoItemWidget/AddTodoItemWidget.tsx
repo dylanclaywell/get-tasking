@@ -4,6 +4,7 @@ import Fab from '../Fab'
 import { useTheme } from '../../contexts/Theme'
 import Icon from '../Icon'
 import InputModal from './InputModal'
+import { useKeyboardHandler } from '../../contexts/App'
 
 export interface Props {
   addTodoItem: (value: string) => void
@@ -17,12 +18,8 @@ export default function AddTodoItemWidget(props: Props) {
   const [getInputIsExiting, setInputIsExiting] = createSignal(false)
   const [getUseMultipleEntries, setUseMultipleEntries] = createSignal(false)
 
-  const closeAddTodoItemPrompt = () => {
-    setInputIsExiting(true)
-  }
-
-  const handleKeyDownWhenAddingItem = (e: KeyboardEvent) => {
-    if (e.key === 'Enter' && getInputValue() !== '') {
+  function handleKeyDownWhenAddingItem(event: KeyboardEvent) {
+    if (event.key === 'Enter' && getInputValue() !== '') {
       props.addTodoItem(getInputValue())
       setInputValue('')
 
@@ -31,28 +28,33 @@ export default function AddTodoItemWidget(props: Props) {
       }
     }
 
-    if (e.key === 'Escape') {
-      e.preventDefault()
-      e.stopImmediatePropagation()
+    if (event.key === 'Escape') {
+      event.preventDefault()
+      event.stopImmediatePropagation()
       closeAddTodoItemPrompt()
     }
   }
 
-  const handleKeyDown = (e: KeyboardEvent) => {
-    if (e.key === 'a' && !getInputIsOpen() && props.canOpen) {
-      e.preventDefault()
-      e.stopImmediatePropagation()
+  function handleKeyDown(event: KeyboardEvent) {
+    if (event.key === 'a' && !getInputIsOpen() && props.canOpen) {
+      event.preventDefault()
+      event.stopImmediatePropagation()
       setInputIsOpen(true)
     }
 
     if (getInputIsOpen() && !getInputIsExiting()) {
-      handleKeyDownWhenAddingItem(e)
+      handleKeyDownWhenAddingItem(event)
     }
   }
 
-  createEffect(() => {
-    document.addEventListener('keydown', handleKeyDown)
+  useKeyboardHandler({
+    handler: handleKeyDown,
+    when: () => Boolean(getInputIsOpen() && getInputRef()),
   })
+
+  const closeAddTodoItemPrompt = () => {
+    setInputIsExiting(true)
+  }
 
   createEffect(() => {
     const inputRef = getInputRef()
@@ -61,17 +63,13 @@ export default function AddTodoItemWidget(props: Props) {
     }
   })
 
-  onCleanup(() =>
-    document.removeEventListener('keydown', handleKeyDownWhenAddingItem)
-  )
-
   return (
     <>
       <InputModal
         isExiting={getInputIsExiting()}
         setInputRef={(el) => setInputRef(el)}
         isOpen={getInputIsOpen()}
-        onChange={(e) => setInputValue(e.currentTarget.value ?? '')}
+        onChange={(e) => setInputValue(e.currentTarget?.value ?? '')}
         setIsExiting={setInputIsExiting}
         setIsOpen={setInputIsOpen}
         value={getInputValue()}

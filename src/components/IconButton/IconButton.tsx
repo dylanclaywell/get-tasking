@@ -3,9 +3,10 @@ import classnames from 'classnames'
 
 import styles from './IconButton.module.css'
 import { useTheme } from '../../contexts/Theme'
+import Icon, { IconName } from '../Icon'
 
 export interface Props {
-  icon: string
+  icon: IconName
   ref?: (el: HTMLButtonElement) => void
   onClick: JSX.EventHandler<HTMLButtonElement, MouseEvent>
 }
@@ -22,6 +23,7 @@ export default function IconButton(props: Props) {
       })}
     >
       <i class={props.icon}></i>
+      <Icon name={props.icon} />
     </button>
   )
 }

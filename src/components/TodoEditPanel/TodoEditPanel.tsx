@@ -10,6 +10,7 @@ import { useTheme } from '../../contexts/Theme'
 
 import styles from './TodoEditPanel.module.css'
 import { UpdateTodoItemArgs } from '../../types/Operations'
+import { useKeyboardHandler } from '../../contexts/App'
 
 interface Tag {
   id: string
@@ -63,17 +64,17 @@ export default function TodoEditPanel(props: Props) {
     }
   }
 
+  useKeyboardHandler({
+    handler: handleKeyDown,
+    when: () => props.isOpen,
+  })
+
   createEffect(() => {
     document.addEventListener('mousemove', handleMouseMove)
   })
 
-  createEffect(() => {
-    document.addEventListener('keydown', handleKeyDown)
-  })
-
   onCleanup(() => {
     document.removeEventListener('mousemove', handleMouseMove)
-    document.removeEventListener('keydown', handleKeyDown)
   })
 
   const getPanelLeftValue = () => {

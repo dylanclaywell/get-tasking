@@ -1,5 +1,6 @@
-import { JSX, Show } from 'solid-js'
+import { createEffect, JSX, onCleanup, Show } from 'solid-js'
 import { Portal } from 'solid-js/web'
+import { useKeyboardHandler } from '../../contexts/App'
 
 import { useTheme } from '../../contexts/Theme'
 
@@ -21,6 +22,21 @@ const rootFontSize = parseInt(
 )
 
 export default function Menu(props: Props) {
+  useKeyboardHandler({
+    handler: (event) => {
+      if (props.isOpen) {
+        event.preventDefault()
+        event.stopImmediatePropagation()
+        event.stopPropagation()
+
+        if (event.key === 'Escape') {
+          props.onClose()
+        }
+      }
+    },
+    when: () => props.isOpen,
+  })
+
   const [getTheme] = useTheme()
   const getXPosition = () => {
     const left = props.anchor?.getBoundingClientRect().left ?? 0

@@ -6,6 +6,7 @@ import { debounce } from 'debounce'
 
 import styles from './TagsTable.module.css'
 import IconButton from '../IconButton'
+import Icon from '../Icon'
 
 interface Tag {
   id: string
@@ -203,10 +204,7 @@ export default function TagsTable(props: Props) {
                 value={tag().color}
               />
               <div class={styles['delete-icon']}>
-                <IconButton
-                  onClick={() => deleteTag(tag().id)}
-                  icon="fa-solid fa-trash-can"
-                />
+                <IconButton onClick={() => deleteTag(tag().id)} icon="trash2" />
               </div>
             </div>
           </div>
@@ -219,7 +217,7 @@ export default function TagsTable(props: Props) {
         onClick={addTagRow}
       >
         Add tag
-        <i class="fa-solid fa-plus" />
+        <Icon name="plus" />
       </button>
     </div>
   )

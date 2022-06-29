@@ -8,7 +8,7 @@ import styles from './InputModal.module.css'
 export interface Props {
   isOpen: boolean
   isExiting: boolean
-  onChange: (e: InputEvent & { currentTarget: HTMLInputElement }) => void
+  onChange: (e: InputEvent & { currentTarget?: HTMLInputElement }) => void
   value: string
   setInputRef: (ref: HTMLInputElement) => void
   setIsOpen: (isOpen: boolean) => void

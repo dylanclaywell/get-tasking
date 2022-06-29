@@ -9,6 +9,8 @@ import Type from './Type'
 
 import styles from './Icon.module.css'
 import ChevronLeft from './ChevronLeft'
+import MoreVertical from './MoreVertical'
+import Trash2 from './Trash2'
 
 export type IconName =
   | 'chevron-right'
@@ -20,6 +22,8 @@ export type IconName =
   | 'type'
   | 'check'
   | 'settings'
+  | 'more-vertical'
+  | 'trash2'
 
 export interface Props {
   name: IconName
@@ -60,6 +64,10 @@ function getIcon(
       return <Check {...props} />
     case 'settings':
       return <Settings {...props} />
+    case 'more-vertical':
+      return <MoreVertical {...props} />
+    case 'trash2':
+      return <Trash2 {...props} />
   }
 }
 

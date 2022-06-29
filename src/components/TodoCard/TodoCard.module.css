@@ -12,16 +12,6 @@
   cursor: pointer;
 }
 
-@keyframes enter {
-  from {
-    transform: translateX(100%);
-  }
-
-  to {
-    transform: translateX(0);
-  }
-}
-
 .todo-card.dark {
   background-color: var(--gray-700);
 }
