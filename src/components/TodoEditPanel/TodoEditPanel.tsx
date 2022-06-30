@@ -98,7 +98,7 @@ export default function TodoEditPanel(props: Props) {
       classList={{
         [styles['todo-edit-panel--open']]: props.isOpen,
         [styles['todo-edit-panel-closing']]: getIsClosing(),
-        [styles.dark]: theme().theme === 'dark',
+        [styles['todo-edit-panel--neu']]: theme().theme === 'neu',
       }}
       style={{
         left: getIsResizing() ? getPanelLeftValue() : undefined,
@@ -114,7 +114,7 @@ export default function TodoEditPanel(props: Props) {
         onMouseUp={() => setIsResizing(false)}
       />
       <div class={styles['close-button-container']}>
-        <IconButton icon="fa-solid fa-xmark" onClick={handleCloseButtonClick} />
+        <IconButton icon="chevron-right" onClick={handleCloseButtonClick} />
       </div>
       <div class={styles['inputs-container']}>
         <TextField

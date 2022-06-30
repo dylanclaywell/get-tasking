@@ -1,4 +1,4 @@
-import { createResource, Suspense } from 'solid-js'
+import { createResource, Suspense, createUniqueId } from 'solid-js'
 
 import { useTheme } from '../../contexts/Theme'
 import ToggleSwitch from '../Switch'
@@ -6,6 +6,7 @@ import SkeletonSettings from '../SkeletonSettings'
 import TagsTable from './TagsTable'
 
 import styles from './Settings.module.css'
+import RadioButton from '../RadioButton'
 
 async function fetchTags({ uid }: { uid: string | null }) {
   if (!uid) {
@@ -44,13 +45,38 @@ export default function Settings() {
       >
         <h2>Tags</h2>
         <TagsTable tags={[]} mutateTags={mutate} />
-        <div class={styles['settings-theme-container']}>
-          <span>Light Theme</span>
-          <ToggleSwitch
-            isChecked={getThemeState().theme === 'dark'}
-            label="Dark Theme"
-            onClick={() => setTheme('dark')}
-          />
+        <div class={styles['settings__theme-container']}>
+          <h2>Theme</h2>
+          <fieldset
+            class={styles['settings__radio-buttons']}
+            classList={{
+              [styles['settings__radio-buttons--neu']]:
+                getThemeState().theme === 'neu',
+            }}
+          >
+            <RadioButton
+              isChecked={getThemeState().theme === 'light'}
+              onChange={(isChecked) => {
+                if (isChecked) {
+                  setTheme('light')
+                }
+              }}
+              value="light"
+              group="theme"
+              label="Light"
+            />
+            <RadioButton
+              isChecked={getThemeState().theme === 'neu'}
+              onChange={(isChecked) => {
+                if (isChecked) {
+                  setTheme('neu')
+                }
+              }}
+              value="dark"
+              group="theme"
+              label="Neumorphic"
+            />
+          </fieldset>
         </div>
       </Suspense>
     </div>

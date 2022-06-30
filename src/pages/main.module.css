@@ -4,3 +4,7 @@
   overflow: hidden;
   position: relative;
 }
+
+.main--neu {
+  background-color: var(--neu-background-gray);
+}

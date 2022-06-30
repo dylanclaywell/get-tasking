@@ -1,10 +1,13 @@
-import { createSignal, createEffect, onCleanup, Show } from 'solid-js'
+import { createSignal, createEffect, Show, onCleanup } from 'solid-js'
 
 import Fab from '../Fab'
 import { useTheme } from '../../contexts/Theme'
 import Icon from '../Icon'
 import InputModal from './InputModal'
 import { useKeyboardHandler } from '../../contexts/App'
+import classnames from 'classnames'
+
+import styles from './AddTodoItemWidget.module.css'
 
 export interface Props {
   addTodoItem: (value: string) => void
@@ -12,6 +15,7 @@ export interface Props {
 }
 
 export default function AddTodoItemWidget(props: Props) {
+  const [getThemeState] = useTheme()
   const [getInputRef, setInputRef] = createSignal<HTMLInputElement>()
   const [getInputValue, setInputValue] = createSignal('')
   const [getInputIsOpen, setInputIsOpen] = createSignal(false)
@@ -36,12 +40,6 @@ export default function AddTodoItemWidget(props: Props) {
   }
 
   function handleKeyDown(event: KeyboardEvent) {
-    if (event.key === 'a' && !getInputIsOpen() && props.canOpen) {
-      event.preventDefault()
-      event.stopImmediatePropagation()
-      setInputIsOpen(true)
-    }
-
     if (getInputIsOpen() && !getInputIsExiting()) {
       handleKeyDownWhenAddingItem(event)
     }
@@ -63,6 +61,20 @@ export default function AddTodoItemWidget(props: Props) {
     }
   })
 
+  // Adding an event handler specifically for being able to add a new item
+  // when this app widget is open (regardless of the state of the input modal).
+  function handleGlobalKeyDown(event: KeyboardEvent) {
+    if (event.key === 'a' && !getInputIsOpen() && props.canOpen) {
+      event.preventDefault()
+      event.stopImmediatePropagation()
+      setInputIsOpen(true)
+    }
+  }
+  document.addEventListener('keydown', handleGlobalKeyDown)
+  onCleanup(() => {
+    document.removeEventListener('keydown', handleGlobalKeyDown)
+  })
+
   return (
     <>
       <InputModal
@@ -74,8 +86,12 @@ export default function AddTodoItemWidget(props: Props) {
         setIsOpen={setInputIsOpen}
         value={getInputValue()}
       />
-      <Show when={!getInputIsOpen()}>
+      <Show when={getThemeState().theme === 'neu' || !getInputIsOpen()}>
         <Fab
+          classes={classnames({
+            [styles['add-todo-item-widget--neu']]:
+              getThemeState().theme === 'neu' && getInputIsOpen(),
+          })}
           relativeToParent
           onClick={() => setInputIsOpen(true)}
           icon={<Icon name="plus" />}

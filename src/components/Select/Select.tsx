@@ -72,17 +72,16 @@ export default function Select<
 
   return (
     <>
-      <div class={classnames(styles.container, props.classes?.root)}>
+      <div class={classnames(props.classes?.root)}>
         <label
           for={id}
           class={classnames(
-            styles.label,
+            styles['select__label'],
             {
-              [styles['label-small']]:
+              [styles['select__label--small']]:
                 getIsFocused() ||
                 ('value' in props && Boolean(props.value)) ||
                 ('values' in props && Boolean(props.values.length)),
-              [styles['label-focused']]: getIsFocused(),
             },
             props.classes?.label
           )}
@@ -94,11 +93,11 @@ export default function Select<
             id={id}
             ref={(el) => setInputRef(el)}
             class={classnames(
-              styles.input,
+              styles['select__input'],
               {
-                [styles['input-focused']]: getIsFocused(),
-                [styles['full-width']]: Boolean(props.fullWidth),
-                [styles.dark]: theme()?.theme === 'dark',
+                [styles['select__input--focused']]: getIsFocused(),
+                [styles['select__input--full-width']]: Boolean(props.fullWidth),
+                [styles['select__input--neu']]: theme().theme === 'neu',
               },
               props.classes?.input
             )}
@@ -115,20 +114,20 @@ export default function Select<
           <div
             ref={(el) => setInputRef(el)}
             class={classnames(
-              styles.input,
+              styles['select__input'],
               {
-                [styles['input-focused']]: getIsFocused(),
-                [styles['full-width']]: Boolean(props.fullWidth),
-                [styles.dark]: theme()?.theme === 'dark',
+                [styles['select__input--focused']]: getIsFocused(),
+                [styles['select__input--full-width']]: Boolean(props.fullWidth),
+                [styles['select__input--neu']]: theme().theme === 'neu',
               },
-              props.classes?.input,
-              styles['multi-select-input']
+              styles['select__input--multi'],
+              props.classes?.input
             )}
             onClick={() => setIsMenuOpen(true)}
           >
             {props.values.map((value) => (
               <div
-                class={styles['multi-select-value']}
+                class={styles['select__input--multi__value']}
                 classList={{
                   [styles.dark]: theme()?.theme === 'dark',
                 }}
@@ -148,7 +147,7 @@ export default function Select<
           {(option) => (
             <MenuItem
               classes={classnames({
-                [styles['multi-select-selected']]:
+                [styles['select__menu-item--selected']]:
                   'values' in props &&
                   props.values.some((value) => option.value === value),
                 [styles.dark]: theme()?.theme === 'dark',

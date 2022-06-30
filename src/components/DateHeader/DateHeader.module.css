@@ -1,46 +1,46 @@
 .date-header {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding-bottom: 2rem;
 }
 
-.date-header-current-day-container {
+.date-header__current-day__container {
   text-align: center;
 }
 
-.date-header-current-day {
+.date-header__current-day {
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 3px;
   color: var(--primary-color-dark);
 }
 
-.date-header-current-day.dark {
-  color: var(--primary-color-light);
-}
-
-.date-header-current-date {
+.date-header__current-date {
   margin-top: 0.5rem;
   font-weight: lighter;
 }
 
-.date-header-date-button {
+.date-header__current-date--neu {
+  color: var(--gray-700);
+}
+
+.date-header__date-button {
   background: none;
   border: none;
-  cursor: pointer;
-  font-size: 1rem;
   display: flex;
+  justify-content: center;
   align-items: center;
+  border-radius: var(--rounded-full);
+  padding: 0.5rem;
+  /* width: 2rem;
+  height: 2rem; */
 }
 
-.date-header-date-button.dark {
-  color: white;
+.date-header__date-button--neu {
+  box-shadow: var(--shadow-neu);
 }
 
-.date-header-date-button > i:first-child {
-  margin-right: 0.5rem;
-}
-
-.date-header-date-button > i:last-child {
-  margin-left: 0.5rem;
+.date-header__date-button--neu:active {
+  box-shadow: var(--shadow-neu--inset);
 }

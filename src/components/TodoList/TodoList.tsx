@@ -210,8 +210,6 @@ export default function TodoList() {
   const toggleTodoItem = async (id: string, isCompleted: boolean) => {
     const currentDate = getCurrentDate()
 
-    console.log(id, isCompleted)
-
     if (isCompleted) {
       await invoke('uncomplete_todo_item', {
         id,
@@ -264,7 +262,7 @@ export default function TodoList() {
       <div
         class={styles['todo-list']}
         classList={{
-          [styles.dark]: theme().theme === 'dark',
+          [styles['todo-list--neu']]: theme().theme === 'neu',
         }}
       >
         <DateHeader

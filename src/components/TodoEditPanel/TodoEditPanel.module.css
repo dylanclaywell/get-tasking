@@ -1,18 +1,17 @@
 .todo-edit-panel {
   padding: 1rem 0rem;
-  /* padding: 1rem; */
-  /* position: absolute; */
-  /* transform: translateX(0%); */
   width: 0;
   background-color: white;
   top: 0;
   right: 0;
   bottom: 0;
-  /* box-shadow: var(--shadow-lg); */
-
   overflow-x: hidden;
   overflow-y: auto;
   left: calc(100vw - 20rem);
+}
+
+.todo-edit-panel--neu {
+  background-color: transparent;
 }
 
 .todo-edit-panel--open {
@@ -64,7 +63,6 @@
 .close-button-container {
   text-align: right;
   display: flex;
-  justify-content: flex-end;
   margin-bottom: 1rem;
 }
 

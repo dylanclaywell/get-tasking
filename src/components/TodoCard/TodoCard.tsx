@@ -7,6 +7,7 @@ import MenuItem from '../MenuItem'
 import IconButton from '../IconButton'
 import { useTheme } from '../../contexts/Theme'
 import { useKeyboardHandler } from '../../contexts/App'
+import Icon from '../Icon'
 
 interface Tag {
   id: string
@@ -36,11 +37,11 @@ export default function TodoCard(props: Props) {
     <div
       style={props.style}
       class={classnames(styles['todo-card'], {
-        [styles['todo-card-done']]: props.isCompleted,
-        [styles['dark']]: getThemeState()?.theme === 'dark',
+        [styles['todo-card--done']]: props.isCompleted,
+        [styles['todo-card--neu']]: getThemeState().theme === 'neu',
 
         // Setting this class after loading so that hovering does not interfere with the animation
-        [styles['hover']]: getCanHover(),
+        [styles['todo-card--can-hover']]: getCanHover(),
       })}
       onClick={props.onClick(props.id)}
       onAnimationEnd={() => {
@@ -52,8 +53,10 @@ export default function TodoCard(props: Props) {
     >
       <div class={styles['left-container']}>
         <div
-          class={classnames(styles['checkbox'], {
-            [styles['checkbox-done']]: props.isCompleted,
+          class={classnames(styles['todo-card__checkbox'], {
+            [styles['todo-card__checkbox--done']]: props.isCompleted,
+            [styles['todo-card__checkbox--neu']]:
+              getThemeState().theme === 'neu',
           })}
           onClick={(e) => {
             e.stopImmediatePropagation()
@@ -61,22 +64,22 @@ export default function TodoCard(props: Props) {
           }}
         >
           {props.isCompleted && (
-            <i
-              class={classnames('fa-solid', 'fa-check', styles['checkmark'])}
-            ></i>
+            <Icon name="check" className={styles['todo-card__checkmark']} />
           )}
         </div>
-        <div class={styles['title-and-tags-container']}>
+        <div class={styles['todo-card__title-and-tag-container']}>
           <span
-            class={classnames(styles['label'], {
+            class={classnames(styles['todo-card__label'], {
               [styles['label-done']]: props.isCompleted,
+              [styles['todo-card__label--neu']]:
+                getThemeState().theme === 'neu',
             })}
           >
             {props.title}
           </span>
           {props.tags.map((tag) => (
             <span
-              class={styles['todo-item-tag']}
+              class={styles['todo-card__tag']}
               style={{ 'background-color': tag.color }}
             >
               {tag.name}
@@ -100,7 +103,7 @@ export default function TodoCard(props: Props) {
         }}
       >
         <MenuItem
-          classes={styles['delete-button']}
+          classes={styles['todo-card__delete-button']}
           onClick={() => {
             props.onDelete(props.id)
             setMenuIsOpen(false)

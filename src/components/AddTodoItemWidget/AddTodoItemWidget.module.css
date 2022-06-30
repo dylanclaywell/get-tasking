@@ -1,0 +1,5 @@
+.add-todo-item-widget--neu {
+  box-shadow: var(--shadow-neu--inset);
+  border-right: 1px solid var(--gray-300);
+  border-bottom: 1px solid var(--gray-300);
+}

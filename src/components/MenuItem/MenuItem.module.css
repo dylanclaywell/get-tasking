@@ -1,6 +1,6 @@
 .menu-item {
   padding: 1rem;
-  cursor: pointer;
+  cursor: default;
   transition: 300ms background;
   display: flex;
   align-items: center;
@@ -10,30 +10,27 @@
   background-color: var(--gray-200);
 }
 
-.menu-item.dark:hover {
-  background-color: var(--gray-700);
-}
-
-.menu-item.dark:hover i {
-  color: var(--gray-500);
-}
-
-.menu-item-rounded:first-child {
+.menu-item--rounded:first-child {
   border-top-left-radius: var(--rounded-md);
   border-top-right-radius: var(--rounded-md);
 }
 
-.menu-item-rounded:last-child {
+.menu-item--rounded:last-child {
   border-bottom-left-radius: var(--rounded-md);
   border-bottom-right-radius: var(--rounded-md);
 }
 
-.menu-item-icon {
+.menu-item__icon {
   margin-right: 0.5rem;
   color: var(--gray-600);
   transition: 300ms;
 }
 
-.menu-item-dark > .menu-item-icon {
+.menu-item--neu {
+  color: var(--gray-600);
+  letter-spacing: 2px;
+}
+
+.menu-item--neu .menu-item__icon {
   color: var(--gray-500);
 }

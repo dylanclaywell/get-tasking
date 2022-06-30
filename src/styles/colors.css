@@ -8,14 +8,7 @@
   --error-color-dark: #a3392f;
   --warning-color: #f4be2c;
 
-  --dark-mode-background-color: #292929;
-  --light-mode-background-color: white;
-
-  --dark-mode-text-color: white;
-  --light-mode-text-color: black;
-
-  --default-background-color: var(--light-mode-background-color);
-  --default-text-color: var(--light-mode-text-color);
+  --neu-background-gray: #e7e7e7;
 
   --gray-100: #fafafa;
   --gray-150: #f5f5f5;

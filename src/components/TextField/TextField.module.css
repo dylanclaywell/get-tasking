@@ -1,13 +1,13 @@
-.container {
+.text-field {
   position: relative;
   border-radius: var(--rounded-md);
 }
 
-.textarea-container {
+.text-field--textarea {
   display: flex;
 }
 
-.textarea-container::after {
+.text-field--textarea::after {
   padding-top: 1.25rem;
   padding-bottom: 1.25rem;
   content: attr(data-value) ' ';
@@ -15,13 +15,13 @@
   visibility: hidden;
 }
 
-.textarea {
+.text-field__textarea {
   position: absolute;
   height: 100%;
   overflow: hidden;
 }
 
-.input {
+.text-field__input {
   border: 1px solid var(--gray-400);
   border-radius: var(--rounded-md);
   padding: 1.25rem;
@@ -33,25 +33,30 @@
   resize: none;
 }
 
-.input.dark {
-  background-color: var(--gray-800);
-  color: white;
-  border-color: var(--gray-700);
+.text-field__input--neu {
+  box-shadow: var(--shadow-neu--inset);
+  background-color: transparent;
+  border: none;
+  color: var(--gray-600);
 }
 
-.input-focused {
+.text-field__textarea--neu {
+  box-shadow: var(--shadow-neu--inset);
+  background-color: transparent;
+  border: none;
+  color: var(--gray-600);
+}
+
+.text-field__input--focused {
   border-color: var(--primary-color);
 }
 
-.input-focused.dark {
-  border-color: var(--primary-color-light);
-}
-
-.full-width {
+.text-field__input--full-width,
+.text-field__textarea--full-width {
   width: 100%;
 }
 
-.label {
+.text-field__label {
   position: absolute;
   margin: 1.25rem;
   transition: 150ms all;
@@ -60,16 +65,12 @@
   z-index: 1;
 }
 
-.label-small {
+.text-field__label--small {
   margin-top: 0.5rem;
   font-size: 0.75rem;
   color: var(--gray-400);
 }
 
-.label-focused {
+.text-field__label--focused {
   color: var(--primary-color);
-}
-
-.label-focused.dark {
-  color: var(--primary-color-light);
 }

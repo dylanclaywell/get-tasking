@@ -15,20 +15,24 @@ export interface Props {
 }
 
 export default function MenuItem(props: Props) {
-  const [themeState] = useTheme()
+  const [getThemeState] = useTheme()
 
   return (
     <div
       onClick={props.onClick}
-      class={classnames(props.classes, styles['menu-item'], {
-        [styles['menu-item-rounded']]: props.isRounded ?? true,
-        [styles['dark']]: themeState()?.theme === 'dark',
-      })}
+      class={classnames(
+        styles['menu-item'],
+        {
+          [styles['menu-item--rounded']]: props.isRounded ?? true,
+          [styles['menu-item--neu']]: getThemeState()?.theme === 'neu',
+        },
+        props.classes
+      )}
     >
       {props.icon ? (
         <Icon
           name={props.icon}
-          className={classnames(styles['menu-item-icon'])}
+          className={classnames(styles['menu-item__icon'])}
         />
       ) : null}
       {props.children}

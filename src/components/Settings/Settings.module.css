@@ -17,12 +17,22 @@
   font-weight: normal;
 }
 
-.settings-theme-container {
+.settings__theme-container {
   margin-top: 1rem;
   display: flex;
-  align-items: center;
+  flex-direction: column;
 }
 
-.settings-theme-container > span {
-  margin-right: 0.5rem;
+.settings__radio-buttons {
+  display: flex;
+  flex-direction: column;
+  border: none;
+}
+
+.settings__radio-buttons > *:not(:last-child) {
+  margin-bottom: 0.5rem;
+}
+
+.settings__radio-buttons--neu > *:not(:last-child) {
+  margin-bottom: 1.5rem;
 }

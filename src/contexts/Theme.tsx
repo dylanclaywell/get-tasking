@@ -8,7 +8,7 @@ import {
   createEffect,
 } from 'solid-js'
 
-type Theme = 'light' | 'dark'
+type Theme = 'light' | 'dark' | 'neu'
 
 interface State {
   theme: Theme
@@ -58,15 +58,6 @@ export default function ThemeProvider(props: Props) {
     getState,
     {
       setTheme(theme: Theme) {
-        document.documentElement.style.setProperty(
-          '--default-background-color',
-          `var(--light-mode-background-color)`
-        )
-        document.documentElement.style.setProperty(
-          '--default-text-color',
-          `var(--light-mode-text-color)`
-        )
-
         setState({ ...getState(), theme })
       },
     },

@@ -1,11 +1,13 @@
+import classnames from 'classnames'
+
 import { useTheme } from '../../contexts/Theme'
 import MenuItem from '../MenuItem'
 import type { AppContext } from '../../pages/main'
-import Icon from '../Icon'
 
 import styles from './AppPanel.module.css'
 
 export interface Props {
+  currentAppContext: AppContext
   setAppContext: (name: AppContext) => void
 }
 
@@ -16,11 +18,17 @@ export default function AppPanel(props: Props) {
     <div
       class={styles['app-panel']}
       classList={{
-        [styles['dark']]: getThemeState().theme === 'dark',
+        [styles['app-panel--neu']]: getThemeState().theme === 'neu',
       }}
     >
       <div>
         <MenuItem
+          classes={classnames(styles['app-panel__menu-item'], {
+            [styles['app-panel__menu-item--neu']]:
+              getThemeState().theme === 'neu',
+            [styles['app-panel__menu-item--active']]:
+              props.currentAppContext === 'todo',
+          })}
           icon="check"
           isRounded={false}
           onClick={() => props.setAppContext('todo')}
@@ -28,6 +36,12 @@ export default function AppPanel(props: Props) {
           Todo
         </MenuItem>
         <MenuItem
+          classes={classnames(styles['app-panel__menu-item'], {
+            [styles['app-panel__menu-item--neu']]:
+              getThemeState().theme === 'neu',
+            [styles['app-panel__menu-item--active']]:
+              props.currentAppContext === 'settings',
+          })}
           icon="settings"
           isRounded={false}
           onClick={() => props.setAppContext('settings')}

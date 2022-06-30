@@ -22,30 +22,35 @@ export default function DateHeader(props: Props) {
   return (
     <div class={styles['date-header']}>
       <button
-        class={styles['date-header-date-button']}
-        classList={{ [styles.dark]: theme()?.theme === 'dark' }}
+        class={styles['date-header__date-button']}
+        classList={{
+          [styles['date-header__date-button--neu']]: theme()?.theme === 'neu',
+        }}
         onClick={shiftLeft}
       >
         <Icon name="chevron-left" />
-        {/* {format(sub(props.currentDate, { days: 1 }), 'LLLL do')} */}
       </button>
-      <div class={styles['date-header-current-day-container']}>
-        <span
-          class={styles['date-header-current-day']}
-          classList={{ [styles.dark]: theme()?.theme === 'dark' }}
-        >
+      <div class={styles['date-header__current-day__container']}>
+        <span class={styles['date-header__current-day']}>
           {format(props.currentDate, 'EEEE')}
         </span>
-        <h1 class={styles['date-header-current-date']}>
+        <h1
+          class={styles['date-header__current-date']}
+          classList={{
+            [styles['date-header__current-date--neu']]:
+              theme()?.theme === 'neu',
+          }}
+        >
           {format(props.currentDate, 'LLLL do, yyyy')}
         </h1>
       </div>
       <button
-        class={styles['date-header-date-button']}
-        classList={{ [styles.dark]: theme()?.theme === 'dark' }}
+        class={styles['date-header__date-button']}
+        classList={{
+          [styles['date-header__date-button--neu']]: theme()?.theme === 'neu',
+        }}
         onClick={shiftRight}
       >
-        {/* {format(add(props.currentDate, { days: 1 }), 'LLLL do')} */}
         <Icon name="chevron-right" />
       </button>
     </div>

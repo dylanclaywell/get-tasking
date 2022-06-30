@@ -1,0 +1,78 @@
+.radio-button {
+  display: block;
+  position: relative;
+  padding-left: 1.5rem;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.radio-button input {
+  position: absolute;
+  opacity: 0;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.radio-button__checkmark {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 0;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid var(--gray-500);
+  border-radius: var(--rounded-full);
+}
+
+/* When the checkbox is checked, add a blue background */
+.radio-button input:checked ~ .radio-button__checkmark {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.radio-button__checkmark:after {
+  content: '';
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.radio-button input:checked ~ .radio-button__checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.radio-button .radio-button__checkmark:after {
+  width: 0.75rem;
+  height: 0.75rem;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 2px solid white;
+  border-radius: var(--rounded-full);
+}
+
+.radio-button--neu {
+  padding-left: 3rem;
+}
+
+.radio-button--neu .radio-button__checkmark:after {
+  border: none;
+}
+
+.radio-button--neu .radio-button__checkmark {
+  box-shadow: var(--shadow-neu);
+  width: 2rem;
+  height: 2rem;
+  border: none;
+}
+
+.radio-button--neu input:checked ~ .radio-button__checkmark {
+  background-color: transparent;
+}
+
+.radio-button--neu input:checked ~ .radio-button__checkmark {
+  box-shadow: var(--shadow-neu), var(--shadow-neu--inset);
+}

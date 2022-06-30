@@ -65,9 +65,9 @@ export default function TextField(props: Props) {
     <div
       data-value={props.multiline ? getInternalTextareaValue() : ''}
       class={classnames(
-        styles.container,
+        styles['text-field'],
         {
-          [styles['textarea-container']]: props.multiline,
+          [styles['text-field--textarea']]: props.multiline,
         },
         props.classes?.root
       )}
@@ -75,11 +75,11 @@ export default function TextField(props: Props) {
       <label
         for={id}
         class={classnames(
-          styles.label,
+          styles['text-field__label'],
           {
-            [styles['label-small']]: getIsFocused() || Boolean(props.value),
-            [styles['label-focused']]: getIsFocused(),
-            [styles.dark]: theme()?.theme === 'dark',
+            [styles['text-field__label--small']]:
+              getIsFocused() || Boolean(props.value),
+            [styles['text-field__label--focused']]: getIsFocused(),
           },
           props.classes?.label
         )}
@@ -91,12 +91,14 @@ export default function TextField(props: Props) {
           id={id}
           ref={props.forwardRef}
           class={classnames(
-            styles.input,
-            styles.textarea,
+            styles['text-field__input'],
+            styles['text-field__textarea'],
             {
-              [styles['input-focused']]: getIsFocused(),
-              [styles['full-width']]: Boolean(props.fullWidth),
-              [styles.dark]: theme()?.theme === 'dark',
+              [styles['text-field__input-focused']]: getIsFocused(),
+              [styles['text-field__textarea--full-width']]: Boolean(
+                props.fullWidth
+              ),
+              [styles['text-field__textarea--neu']]: theme()?.theme === 'neu',
             },
             props.classes?.input
           )}
@@ -119,11 +121,13 @@ export default function TextField(props: Props) {
           id={id}
           ref={props.forwardRef}
           class={classnames(
-            styles.input,
+            styles['text-field__input'],
             {
-              [styles.dark]: theme()?.theme === 'dark',
-              [styles['input-focused']]: getIsFocused(),
-              [styles['full-width']]: Boolean(props.fullWidth),
+              [styles['text-field__input--neu']]: theme()?.theme === 'neu',
+              [styles['text-field__input--focused']]: getIsFocused(),
+              [styles['text-field__input--full-width']]: Boolean(
+                props.fullWidth
+              ),
             },
             props.classes?.input
           )}

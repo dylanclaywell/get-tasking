@@ -6,8 +6,8 @@
   overflow-y: auto;
 }
 
-.todo-list.dark {
-  background-color: var(--gray-800);
+.todo-list--neu {
+  background-color: transparent;
 }
 
 .lists > :not(:first-child) {

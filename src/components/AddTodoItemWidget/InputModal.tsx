@@ -24,6 +24,7 @@ export default function InputModal(props: Props) {
           classList={{
             [styles['input-modal__overlay--open']]: props.isOpen,
           }}
+          onClick={() => props.setIsExiting(true)}
         />
         <div
           class={styles['input-modal__input-container']}

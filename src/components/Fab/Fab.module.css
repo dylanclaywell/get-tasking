@@ -17,14 +17,23 @@
   transition: 300ms background;
   outline: none;
   border: none;
-  cursor: pointer;
+}
+
+.fab:hover {
+  background-color: var(--primary-color-dark);
+}
+
+.fab--neu {
+  box-shadow: var(--shadow-neu);
+  background-color: var(--neu-background-gray);
+  color: var(--gray-600);
+}
+
+.fab--neu:hover {
+  background-color: var(--neu-background-gray);
 }
 
 .fab--relative-to-parent {
   right: unset;
   bottom: unset;
-}
-
-.fab:hover {
-  background-color: var(--primary-color-dark);
 }
