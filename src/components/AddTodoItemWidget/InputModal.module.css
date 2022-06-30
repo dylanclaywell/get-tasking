@@ -11,6 +11,10 @@
   z-index: 1;
 }
 
+.input-modal__overlay--neu {
+  background-color: var(--neu-background-gray);
+}
+
 .input-modal__overlay--open {
   visibility: visible;
   opacity: 1;
@@ -57,4 +61,12 @@
     padding-left: 0;
     padding-right: 0;
   }
+}
+
+.input-modal__input-container--neu {
+  box-shadow: var(--neu-shadow);
+}
+
+.input-modal__input-control--neu {
+  background-color: var(--neu-background-color);
 }

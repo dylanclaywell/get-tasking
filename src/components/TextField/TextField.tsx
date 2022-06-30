@@ -144,7 +144,6 @@ export default function TextField(props: Props) {
           value={props.value}
           disabled={props.isDisabled}
           readOnly={props.isDisabled}
-          // type="password"
           type={props.type}
         />
       )}

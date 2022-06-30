@@ -35,7 +35,7 @@
 
 .text-field__input--neu {
   box-shadow: var(--shadow-neu--inset);
-  background-color: transparent;
+  background-color: var(--neu-background-gray);
   border: none;
   color: var(--gray-600);
 }
