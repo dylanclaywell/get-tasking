@@ -4,6 +4,7 @@
   transition: 300ms background;
   display: flex;
   align-items: center;
+  user-select: none;
 }
 
 .menu-item:hover {

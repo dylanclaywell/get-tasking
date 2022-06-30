@@ -73,6 +73,7 @@
   background-color: transparent;
 }
 
-.radio-button--neu input:checked ~ .radio-button__checkmark {
+.radio-button--neu input:checked ~ .radio-button__checkmark,
+.radio-button--neu input:active ~ .radio-button__checkmark {
   box-shadow: var(--shadow-neu), var(--shadow-neu--inset);
 }

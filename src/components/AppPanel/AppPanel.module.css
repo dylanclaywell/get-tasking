@@ -29,7 +29,8 @@
   background-color: var(--gray-300);
 }
 
-.app-panel__menu-item--neu.app-panel__menu-item--active {
+.app-panel__menu-item--neu.app-panel__menu-item--active,
+.app-panel__menu-item--neu:active {
   box-shadow: var(--shadow-neu--inset);
   border-right: 1px solid rgb(234, 234, 234);
   border-bottom: 1px solid rgb(234, 234, 234);
