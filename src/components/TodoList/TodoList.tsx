@@ -308,7 +308,13 @@ export default function TodoList() {
                     tags={item().tags}
                     onDelete={deleteTodoItem}
                     onComplete={toggleTodoItem}
-                    onClick={(id) => () => setSelectedItemId(id)}
+                    onClick={(id) => () => {
+                      if (getSelectedItemId() === id) {
+                        setPanelIsClosing(true)
+                      } else {
+                        setSelectedItemId(id)
+                      }
+                    }}
                   />
                 )}
               </Index>
