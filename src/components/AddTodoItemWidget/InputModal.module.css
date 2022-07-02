@@ -70,3 +70,16 @@
 .input-modal__input-control--neu {
   background-color: var(--neu-background-color);
 }
+
+.input-modal__input-control {
+  padding: 1.25rem 1rem;
+}
+
+.input-modal__input-label {
+  margin: 1rem;
+}
+
+.input-modal__input-label {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+}

@@ -1,7 +1,6 @@
-import { createResource, Suspense, createUniqueId } from 'solid-js'
+import { createResource, Suspense } from 'solid-js'
 
 import { useTheme } from '../../contexts/Theme'
-import ToggleSwitch from '../Switch'
 import SkeletonSettings from '../SkeletonSettings'
 import TagsTable from './TagsTable'
 
@@ -9,11 +8,6 @@ import styles from './Settings.module.css'
 import RadioButton from '../RadioButton'
 
 async function fetchTags({ uid }: { uid: string | null }) {
-  if (!uid) {
-    console.error('No uid')
-    return
-  }
-
   const response = {
     data: {
       tags: [],

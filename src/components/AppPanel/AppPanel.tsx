@@ -22,32 +22,28 @@ export default function AppPanel(props: Props) {
       }}
     >
       <div>
-        <MenuItem
-          classes={classnames(styles['app-panel__menu-item'], {
+        <div
+          class={classnames(styles['app-panel__menu-item'], {
             [styles['app-panel__menu-item--neu']]:
               getThemeState().theme === 'neu',
             [styles['app-panel__menu-item--active']]:
               props.currentAppContext === 'todo',
           })}
-          icon="check"
-          isRounded={false}
           onClick={() => props.setAppContext('todo')}
         >
           Todo
-        </MenuItem>
-        <MenuItem
-          classes={classnames(styles['app-panel__menu-item'], {
+        </div>
+        <div
+          class={classnames(styles['app-panel__menu-item'], {
             [styles['app-panel__menu-item--neu']]:
               getThemeState().theme === 'neu',
             [styles['app-panel__menu-item--active']]:
               props.currentAppContext === 'settings',
           })}
-          icon="settings"
-          isRounded={false}
           onClick={() => props.setAppContext('settings')}
         >
           Settings
-        </MenuItem>
+        </div>
       </div>
     </div>
   )

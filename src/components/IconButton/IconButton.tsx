@@ -9,6 +9,10 @@ export interface Props {
   icon: IconName
   ref?: (el: HTMLButtonElement) => void
   onClick: JSX.EventHandler<HTMLButtonElement, MouseEvent>
+  color?: 'default' | 'primary'
+  classes?: {
+    root?: string
+  }
 }
 
 export default function IconButton(props: Props) {
@@ -18,9 +22,15 @@ export default function IconButton(props: Props) {
     <button
       ref={props.ref}
       onClick={props.onClick}
-      class={classnames(styles['button'], {
-        [styles['button-dark']]: themeState()?.theme === 'dark',
-      })}
+      class={classnames(
+        styles['button'],
+        {
+          [styles['button--primary']]: props.color === 'primary',
+          [styles['button--default']]:
+            props.color === 'default' || !props.color,
+        },
+        props.classes?.root
+      )}
     >
       <i class={props.icon}></i>
       <Icon name={props.icon} />

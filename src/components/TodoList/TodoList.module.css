@@ -1,7 +1,6 @@
 .todo-list {
-  background-color: var(--gray-200);
   flex-grow: 1;
-  padding: 2rem;
+  padding: 1rem;
   position: relative;
   overflow-y: auto;
 }

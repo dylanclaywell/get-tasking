@@ -1,14 +1,33 @@
 .todo-card {
-  background-color: white;
   display: flex;
   align-items: center;
   padding: 1rem;
   border-radius: var(--rounded-md);
-  box-shadow: var(--shadow-sm);
   transition: 300ms all;
   justify-content: space-between;
   animation-name: enter;
   animation-duration: 300ms;
+  font-weight: 300;
+  user-select: none;
+}
+
+.todo-card:hover {
+  background-color: var(--primary-color-light);
+}
+
+.todo-card--selected {
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: 500;
+}
+
+.todo-card--selected:hover {
+  background-color: var(--primary-color-dark);
+}
+
+.todo-card--selected.todo-card--done {
+  background-color: var(--primary-color);
+  color: white;
 }
 
 .todo-card--neu {
@@ -21,7 +40,7 @@
 }
 
 .todo-card--done {
-  background-color: var(--gray-300);
+  background-color: var(--gray-2);
 }
 
 .todo-card--neu.todo-card--done {
@@ -51,11 +70,12 @@
 }
 
 .todo-card__checkbox {
-  border: 1px solid var(--gray-400);
+  background-color: white;
+  border: 1px solid var(--border-gray);
   min-width: 2rem;
   min-height: 2rem;
   padding: 0.25rem;
-  border-radius: var(--rounded-full);
+  border-radius: var(--rounded-sm);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -64,11 +84,11 @@
 }
 
 .todo-card__checkbox:hover {
-  background-color: var(--gray-200);
+  background-color: var(--gray-1);
 }
 
 .todo-card__checkbox--done:hover {
-  background-color: var(--gray-200);
+  background-color: var(--gray-2);
 }
 
 .todo-card__checkbox--neu {
@@ -96,6 +116,10 @@
   text-decoration-line: line-through;
 }
 
+.todo-card--done.todo-card--selected .label-done {
+  color: white;
+}
+
 .todo-card__delete-button {
   color: var(--error-color);
 }
@@ -104,4 +128,16 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+}
+
+.todo-card--selected .todo-card__menu-button {
+  color: white;
+}
+
+.todo-card__menu-button:hover {
+  background-color: var(--gray-1);
+}
+
+.todo-card--selected .todo-card__menu-button:hover {
+  background-color: var(--primary-color);
 }

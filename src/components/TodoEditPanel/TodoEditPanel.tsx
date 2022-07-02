@@ -27,7 +27,9 @@ export interface Props {
     value: ValueOf<UpdateTodoItemArgs>
   ) => void
   onClose: () => void
+  setIsClosing: (isClosing: boolean) => void
   isOpen: boolean
+  isClosing: boolean
 }
 
 const rootFontSize = parseInt(
@@ -39,17 +41,13 @@ const rootFontSize = parseInt(
 
 export default function TodoEditPanel(props: Props) {
   const [theme] = useTheme()
-  const [getIsClosing, setIsClosing] = createSignal(false)
+
   const [getIsResizing, setIsResizing] = createSignal(false)
   const [getMouseX, setMouseX] = createSignal<number>()
 
-  const handleCloseButtonClick = () => {
-    setIsClosing(true)
-  }
-
   const closePanel = () => {
-    if (getIsClosing() === true) {
-      setIsClosing(false)
+    if (props.isClosing === true) {
+      props.setIsClosing(false)
       props.onClose()
     }
   }
@@ -60,7 +58,7 @@ export default function TodoEditPanel(props: Props) {
 
   const handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === 'Escape' && props.isOpen) {
-      setIsClosing(true)
+      props.setIsClosing(true)
     }
   }
 
@@ -97,7 +95,7 @@ export default function TodoEditPanel(props: Props) {
       class={styles['todo-edit-panel']}
       classList={{
         [styles['todo-edit-panel--open']]: props.isOpen,
-        [styles['todo-edit-panel-closing']]: getIsClosing(),
+        [styles['todo-edit-panel-closing']]: props.isClosing,
         [styles['todo-edit-panel--neu']]: theme().theme === 'neu',
       }}
       style={{
@@ -113,9 +111,6 @@ export default function TodoEditPanel(props: Props) {
         }}
         onMouseUp={() => setIsResizing(false)}
       />
-      <div class={styles['close-button-container']}>
-        <IconButton icon="chevron-right" onClick={handleCloseButtonClick} />
-      </div>
       <div class={styles['inputs-container']}>
         <TextField
           value={props.item?.title ?? ''}

@@ -19,17 +19,17 @@
   position: absolute;
   height: 100%;
   overflow: hidden;
+  font-family: 'Nunito';
 }
 
 .text-field__input {
   border: 1px solid var(--gray-400);
   border-radius: var(--rounded-md);
-  padding: 1.25rem;
+  padding: 0.5rem;
   outline: none;
   transition: 150ms all;
   box-sizing: border-box;
   font-size: 1rem;
-  font-family: Roboto;
   resize: none;
 }
 
@@ -58,7 +58,7 @@
 
 .text-field__label {
   position: absolute;
-  margin: 1.25rem;
+  margin: 0.5rem;
   transition: 150ms all;
   color: var(--gray-500);
   cursor: text;
@@ -66,9 +66,10 @@
 }
 
 .text-field__label--small {
-  margin-top: 0.5rem;
+  margin-top: -0.5rem;
   font-size: 0.75rem;
   color: var(--gray-400);
+  background-color: white;
 }
 
 .text-field__label--focused {

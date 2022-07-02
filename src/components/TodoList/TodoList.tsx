@@ -10,16 +10,7 @@ import { debounce } from 'debounce'
 
 import TodoCard from '../TodoCard'
 import TodoEditPanel from '../TodoEditPanel'
-import {
-  Query,
-  Mutation,
-  MutationCreateTodoItemArgs,
-  MutationDeleteTodoItemArgs,
-  MutationUpdateTodoItemArgs,
-  TodoItem as TodoItemGql,
-  QueryTodoItemsArgs,
-  Tag,
-} from '../../generated/graphql'
+import { Tag } from '../../generated/graphql'
 import AddTodoItemWidget from '../AddTodoItemWidget'
 import DateHeader from '../DateHeader'
 import SkeletonTodoCard from '../SkeletonTodoCard'
@@ -128,6 +119,7 @@ async function fetchTags({ uid }: { uid: string | null }) {
 
 export default function TodoList() {
   const [theme] = useTheme()
+  const [getPanelIsClosing, setPanelIsClosing] = createSignal(false)
   const [getCurrentDate, setCurrentDate] = createSignal<Date>(new Date())
   const [tagsData] = createResource(fetchTags)
   const [todoItems, { mutate }] = createResource(
@@ -283,12 +275,19 @@ export default function TodoList() {
                     'animation-duration': `${index * 20 + 300}ms`,
                   }}
                   id={item().id}
+                  isSelected={item().id === getSelectedItemId()}
                   title={item().title}
                   isCompleted={item().isCompleted}
                   tags={item().tags}
                   onDelete={deleteTodoItem}
                   onComplete={toggleTodoItem}
-                  onClick={(id) => () => setSelectedItemId(id)}
+                  onClick={(id) => () => {
+                    if (getSelectedItemId() === id) {
+                      setPanelIsClosing(true)
+                    } else {
+                      setSelectedItemId(id)
+                    }
+                  }}
                 />
               )}
             </Index>
@@ -303,6 +302,7 @@ export default function TodoList() {
                       'animation-duration': `${index * 10 + 300}ms`,
                     }}
                     id={item().id}
+                    isSelected={item().id === getSelectedItemId()}
                     title={item().title}
                     isCompleted={item().isCompleted}
                     tags={item().tags}
@@ -322,6 +322,8 @@ export default function TodoList() {
       </div>
       {
         <TodoEditPanel
+          isClosing={getPanelIsClosing()}
+          setIsClosing={setPanelIsClosing}
           isOpen={Boolean(getSelectedItem())}
           tags={tagsData()?.data.tags ?? []}
           item={getSelectedItem() ?? undefined}

@@ -6,7 +6,6 @@ import Menu from '../Menu'
 import MenuItem from '../MenuItem'
 import IconButton from '../IconButton'
 import { useTheme } from '../../contexts/Theme'
-import { useKeyboardHandler } from '../../contexts/App'
 import Icon from '../Icon'
 
 interface Tag {
@@ -17,6 +16,7 @@ interface Tag {
 
 export interface Props {
   id: string
+  isSelected: boolean
   title: string
   isCompleted: boolean
   tags: Tag[]
@@ -39,6 +39,7 @@ export default function TodoCard(props: Props) {
       class={classnames(styles['todo-card'], {
         [styles['todo-card--done']]: props.isCompleted,
         [styles['todo-card--neu']]: getThemeState().theme === 'neu',
+        [styles['todo-card--selected']]: props.isSelected,
 
         // Setting this class after loading so that hovering does not interfere with the animation
         [styles['todo-card--can-hover']]: getCanHover(),
@@ -88,6 +89,8 @@ export default function TodoCard(props: Props) {
         </div>
       </div>
       <IconButton
+        color="primary"
+        classes={{ root: styles['todo-card__menu-button'] }}
         ref={(el) => setMenuRef(el)}
         icon="more-vertical"
         onClick={(e) => {

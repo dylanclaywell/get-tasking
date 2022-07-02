@@ -2,13 +2,12 @@
   width: 2rem;
   height: 2rem;
   font-size: 1.25rem;
-  color: var(--gray-600);
-  border-radius: 9999px;
+  color: var(--gray-4);
+  border-radius: var(--rounded-sm);
   transition: 300ms background;
   outline: none;
   border: none;
   background-color: transparent;
-  cursor: pointer;
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -19,6 +18,10 @@
   background-color: var(--gray-300);
 }
 
-.button-dark:hover {
-  background-color: var(--gray-800);
+.button--primary:hover {
+  background-color: var(--primary-color-light);
+}
+
+.button--default:hover {
+  background-color: var(--gray-3);
 }

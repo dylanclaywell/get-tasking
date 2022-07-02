@@ -1,8 +1,10 @@
 .app-panel {
-  border-right: 1px solid var(--gray-300);
+  border-right: 1px solid var(--gray-2);
+  background-color: var(--gray-1);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  grid-column-end: span 3;
 }
 
 .app-panel--neu *:not(:last-child) {
@@ -15,7 +17,16 @@
 }
 
 .app-panel__menu-item {
+  margin: 0.5rem;
+  padding: 0.5rem;
   width: 10rem;
+  border-radius: var(--rounded-sm);
+  user-select: none;
+  font-weight: 300;
+}
+
+.app-panel__menu-item:hover {
+  background-color: var(--gray-2);
 }
 
 .app-panel__menu-item--neu {
@@ -26,7 +37,8 @@
 }
 
 .app-panel__menu-item--active {
-  background-color: var(--gray-300);
+  background-color: var(--gray-3);
+  font-weight: 500;
 }
 
 .app-panel__menu-item--neu.app-panel__menu-item--active,
@@ -38,5 +50,4 @@
 
 .app-panel__menu-item--neu:hover {
   background-color: transparent;
-  /* box-shadow: var(--shadow-neu--inset); */
 }

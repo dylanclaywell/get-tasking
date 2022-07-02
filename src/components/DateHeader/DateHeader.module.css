@@ -12,13 +12,12 @@
 .date-header__current-day {
   text-align: center;
   text-transform: uppercase;
-  letter-spacing: 3px;
-  color: var(--primary-color-dark);
+  color: var(--primary-color);
 }
 
 .date-header__current-date {
   margin-top: 0.5rem;
-  font-weight: lighter;
+  font-weight: 400;
 }
 
 .date-header__current-date--neu {
@@ -31,10 +30,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: var(--rounded-full);
+  border-radius: var(--rounded-sm);
   padding: 0.5rem;
-  /* width: 2rem;
-  height: 2rem; */
+}
+
+.date-header__date-button:hover {
+  background-color: var(--primary-color-light);
 }
 
 .date-header__date-button--neu {

@@ -8,6 +8,7 @@
   overflow-x: hidden;
   overflow-y: auto;
   left: calc(100vw - 20rem);
+  border-left: 1px solid var(--border-gray);
 }
 
 .todo-edit-panel--neu {

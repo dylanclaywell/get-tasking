@@ -1,7 +1,7 @@
 :root {
   --primary-color: #3f6fe0;
   --primary-color-dark: #3156ad;
-  --primary-color-light: #6b97fa;
+  --primary-color-light: #e2eafc;
 
   --success-color: #66ad47;
   --error-color: #bf3325;
@@ -9,6 +9,13 @@
   --warning-color: #f4be2c;
 
   --neu-background-gray: #e7e7e7;
+
+  --gray-1: #f9f9f9;
+  --gray-2: #f2f2f2;
+  --gray-3: #ebebeb;
+  --gray-4: #b1b1b1;
+
+  --border-gray: #e3e3e3;
 
   --gray-100: #fafafa;
   --gray-150: #f5f5f5;

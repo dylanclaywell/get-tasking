@@ -57,11 +57,15 @@ export default function InputModal(props: Props) {
             label="Title"
             value={props.value}
             onChange={props.onChange}
-            inputProps={{
-              className: classNames({
-                [styles['input-modal__input-control--neu']]:
-                  getThemeState().theme === 'neu',
-              }),
+            classes={{
+              label: styles['input-modal__input-label'],
+              input: classNames(
+                {
+                  [styles['input-modal__input-control--neu']]:
+                    getThemeState().theme === 'neu',
+                },
+                styles['input-modal__input-control']
+              ),
             }}
           />
         </div>
