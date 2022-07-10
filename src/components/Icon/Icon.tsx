@@ -6,11 +6,15 @@ import PlusCircle from './PlusCircle'
 import Check from './Check'
 import Settings from './Settings'
 import Type from './Type'
-
-import styles from './Icon.module.css'
 import ChevronLeft from './ChevronLeft'
 import MoreVertical from './MoreVertical'
 import Trash2 from './Trash2'
+import Maximize2 from './Maximize2'
+import Minimize2 from './Minimize2'
+import Minus from './Minus'
+import X from './X'
+
+import styles from './Icon.module.css'
 
 export type IconName =
   | 'chevron-right'
@@ -24,6 +28,10 @@ export type IconName =
   | 'settings'
   | 'more-vertical'
   | 'trash2'
+  | 'maximize-2'
+  | 'minimize-2'
+  | 'minus'
+  | 'x'
 
 export interface Props {
   name: IconName
@@ -68,6 +76,14 @@ function getIcon(
       return <MoreVertical {...props} />
     case 'trash2':
       return <Trash2 {...props} />
+    case 'maximize-2':
+      return <Maximize2 {...props} />
+    case 'minimize-2':
+      return <Minimize2 {...props} />
+    case 'minus':
+      return <Minus {...props} />
+    case 'x':
+      return <X {...props} />
   }
 }
 

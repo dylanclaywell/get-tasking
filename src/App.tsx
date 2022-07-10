@@ -1,3 +1,4 @@
+import TitleBar from './components/TitleBar'
 import AppProvider from './contexts/App'
 import MessageProvider from './contexts/Message'
 import ThemeProvider from './contexts/Theme'

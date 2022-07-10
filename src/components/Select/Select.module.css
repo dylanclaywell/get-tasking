@@ -1,6 +1,6 @@
 .select__input {
   padding: 1.25rem;
-  border: 1px solid var(--gray-400);
+  border: 1px solid var(--border-gray);
   border-radius: var(--rounded-md);
   box-sizing: border-box;
 }
@@ -24,13 +24,13 @@
   position: absolute;
   margin: 1.25rem;
   transition: 150ms all;
-  color: var(--gray-500);
+  color: var(--gray-5);
 }
 
 .select__label--small {
   margin-top: 0.5rem;
   font-size: 0.75rem;
-  color: var(--gray-400);
+  color: var(--gray-5);
 }
 
 .select__input--multi {
@@ -44,7 +44,7 @@
   flex-shrink: 0;
   padding: 0.5rem;
   border-radius: var(--rounded-md);
-  background-color: var(--gray-300);
+  background-color: var(--gray-3);
   margin: 0.25rem;
 }
 

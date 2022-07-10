@@ -3,12 +3,21 @@
   windows_subsystem = "windows"
 )]
 
+use tauri::Manager;
+use window_shadows::set_shadow;
+
 mod controllers;
 pub mod database;
 pub mod models;
 
 fn main() {
   tauri::Builder::default()
+    .setup(|app| {
+      let main_window = app.get_window("main").unwrap();
+      set_shadow(&main_window, true).expect("Unsupported platform!");
+
+      Ok(())
+    })
     .invoke_handler(tauri::generate_handler![
       controllers::todo_items::get_todo_items,
       controllers::todo_items::create_todo_item,

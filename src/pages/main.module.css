@@ -3,7 +3,8 @@
   height: 100vh;
   overflow: hidden;
   position: relative;
-  border: 1px solid var(--border-gray);
+  padding-top: 46px;
+  background-color: white;
 }
 
 .main--neu {
