@@ -1,4 +1,5 @@
-import { createSignal, Index, Setter } from 'solid-js'
+import { createSignal, Index, Setter, For } from 'solid-js'
+import { invoke } from '@tauri-apps/api'
 import classnames from 'classnames'
 import { useTheme } from '../../contexts/Theme'
 import cloneDeep from 'lodash.clonedeep'
@@ -7,12 +8,7 @@ import { debounce } from 'debounce'
 import styles from './TagsTable.module.css'
 import IconButton from '../IconButton'
 import Icon from '../Icon'
-
-interface Tag {
-  id: string
-  name: string
-  color: string
-}
+import { Tag } from '../../types/Models'
 
 interface Errors {
   name: string[]
@@ -21,14 +17,7 @@ interface Errors {
 
 interface Props {
   tags: Tag[] | undefined
-  mutateTags: Setter<
-    | {
-        data: {
-          [key: string]: Tag[]
-        }
-      }
-    | undefined
-  >
+  mutateTags: Setter<Tag[] | undefined>
 }
 
 function generateRandomNumber() {
@@ -54,7 +43,7 @@ export default function TagsTable(props: Props) {
   const onChangeInput = debounce(
     async (
       id: string,
-      name: keyof Omit<Tag, '__typename' | 'id'>,
+      name: keyof Omit<Tag, 'id'>,
       value: string,
       validation?: RegExp
     ) => {
@@ -74,65 +63,45 @@ export default function TagsTable(props: Props) {
         return
       }
 
-      const response = {
-        data: {
-          updateTag: {
-            id,
-            name: value,
-            color: tag?.color,
-          },
-        },
-      }
+      await invoke('update_tag', {
+        id,
+        ...(name === 'name' && { name: value }),
+        ...(name === 'color' && { color: value }),
+      })
 
-      if ('errors' in response) {
-        console.error('Error updating tag')
-        return
-      }
+      tags.splice(tagIndex, 1, {
+        ...tag,
+        [name]: value,
+      })
 
-      tags.splice(tagIndex, 1, response.data.updateTag)
-
-      props.mutateTags(() => ({
-        data: {
-          tags,
-        },
-      }))
+      props.mutateTags(() => tags)
     },
     500
   )
 
   const addTagRow = async () => {
-    const response = {
-      data: {
-        createTag: {
-          id: 'new-tag-id',
-          name: 'New Tag',
-          color: generateRandomColor(),
-        },
-      },
-    }
+    const newTag = JSON.parse(
+      await invoke('create_tag', {
+        name: 'New Tag',
+        color: generateRandomColor(),
+      })
+    ) as Tag
 
-    if ('errors' in response) {
-      console.error('Error adding tag')
-      return
-    }
-
-    props.mutateTags((prev) => ({
-      data: {
-        tags: [...(prev?.data.tags ?? []), response.data.createTag],
-      },
-    }))
+    props.mutateTags((prev) => [...(prev || []), newTag])
   }
 
   const deleteTag = async (id: string) => {
-    // await mutation<MutationDeleteTagArgs, Status>(deleteTagMutation, {
-    //   id: id,
-    // })
+    await invoke('delete_tag', { id })
 
-    props.mutateTags((prev) => ({
-      data: {
-        tags: (prev?.data.tags ?? []).filter((t) => t.id !== id),
-      },
-    }))
+    console.log('delete tag', id)
+
+    props.mutateTags((prev) => {
+      console.log(
+        'new',
+        prev?.filter((tag) => tag.id !== id)
+      )
+      return prev?.filter((tag) => tag.id !== id)
+    })
   }
 
   const addError = (name: keyof Errors, id: string) => {
@@ -161,7 +130,7 @@ export default function TagsTable(props: Props) {
         [styles['dark']]: getThemeState()?.theme === 'dark',
       }}
     >
-      <Index each={props.tags}>
+      <For each={props.tags}>
         {(tag) => (
           <div
             class={styles['tag-table-row']}
@@ -173,43 +142,40 @@ export default function TagsTable(props: Props) {
               <input
                 class={styles['tag-table-input']}
                 classList={{
-                  [styles['tag-table-input-error']]: hasError('name', tag().id),
+                  [styles['tag-table-input-error']]: hasError('name', tag.id),
                 }}
                 onInput={(e) => {
-                  onChangeInput(tag().id, 'name', e.currentTarget.value)
+                  onChangeInput(tag.id, 'name', e.currentTarget.value)
                 }}
-                value={tag().name}
+                value={tag.name}
               />
             </div>
             <div class={styles['tag-color']}>
               <div
                 class={styles['tag-color-sample']}
-                style={{ 'background-color': tag().color }}
+                style={{ 'background-color': tag.color }}
               />
               <input
                 class={classnames(styles['tag-table-input'], {
-                  [styles['tag-table-input-error']]: hasError(
-                    'color',
-                    tag().id
-                  ),
+                  [styles['tag-table-input-error']]: hasError('color', tag.id),
                 })}
                 onInput={(e) => {
                   onChangeInput(
-                    tag().id,
+                    tag.id,
                     'color',
                     e.currentTarget.value,
                     /^#[A-Fa-f0-9]{6}$/
                   )
                 }}
-                value={tag().color}
+                value={tag.color}
               />
               <div class={styles['delete-icon']}>
-                <IconButton onClick={() => deleteTag(tag().id)} icon="trash2" />
+                <IconButton onClick={() => deleteTag(tag.id)} icon="trash2" />
               </div>
             </div>
           </div>
         )}
-      </Index>
+      </For>
       <button
         class={classnames(styles['tag-table-add-row'], {
           [styles['dark']]: getThemeState()?.theme === 'dark',

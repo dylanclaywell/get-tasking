@@ -1,5 +1,3 @@
-import { Tag } from '../generated/graphql'
-
 export interface TodoItem {
   id: string
   title: string
@@ -23,4 +21,10 @@ export interface TodoItemModel {
   date_created: string
   time_created: string
   timezone_created: string
+}
+
+export interface Tag {
+  id: string
+  name: string
+  color: string
 }

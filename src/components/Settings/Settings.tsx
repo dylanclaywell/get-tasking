@@ -1,4 +1,5 @@
 import { createResource, Suspense } from 'solid-js'
+import { invoke } from '@tauri-apps/api'
 
 import { useTheme } from '../../contexts/Theme'
 import SkeletonSettings from '../SkeletonSettings'
@@ -6,18 +7,11 @@ import TagsTable from './TagsTable'
 
 import styles from './Settings.module.css'
 import RadioButton from '../RadioButton'
+import { Tag } from '../../types/Models'
 
 async function fetchTags({ uid }: { uid: string | null }) {
-  const response = {
-    data: {
-      tags: [],
-    },
-  }
-
-  if (!response || 'errors' in response) {
-    console.error('Error getting tags')
-    return
-  }
+  // TODO type check
+  const response = JSON.parse(await invoke('get_tags')) as Tag[]
 
   return response
 }
@@ -38,7 +32,7 @@ export default function Settings() {
         }
       >
         <h2>Tags</h2>
-        <TagsTable tags={[]} mutateTags={mutate} />
+        <TagsTable tags={data()} mutateTags={mutate} />
         <div class={styles['settings__theme-container']}>
           <h2>Theme</h2>
           <fieldset
