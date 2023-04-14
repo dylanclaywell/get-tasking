@@ -12,6 +12,8 @@
   box-shadow: var(--shadow-md);
   border-radius: var(--rounded-lg);
   z-index: 1;
+  overflow-y: auto;
+  max-height: 9.5rem;
 }
 
 .menu.dark > * {

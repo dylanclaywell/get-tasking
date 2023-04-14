@@ -11,6 +11,7 @@ export interface Props {
   isOpen: boolean
   onClose: () => void
   anchor: HTMLElement | undefined
+  maxHeight?: number
 }
 
 const width = 16

@@ -23,6 +23,7 @@
   border-radius: var(--rounded-sm);
   user-select: none;
   font-weight: 300;
+  cursor: default;
 }
 
 .app-panel__menu-item:hover {

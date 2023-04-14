@@ -1,4 +1,4 @@
-import { createResource, Suspense } from 'solid-js'
+import { createResource, Suspense, useContext } from 'solid-js'
 import { invoke } from '@tauri-apps/api'
 
 import { useTheme } from '../../contexts/Theme'
@@ -7,18 +7,11 @@ import TagsTable from './TagsTable'
 
 import styles from './Settings.module.css'
 import RadioButton from '../RadioButton'
-import { Tag } from '../../types/Models'
-
-async function fetchTags({ uid }: { uid: string | null }) {
-  // TODO type check
-  const response = JSON.parse(await invoke('get_tags')) as Tag[]
-
-  return response
-}
+import { TagsContext } from '../../contexts/Tags'
 
 export default function Settings() {
+  const [tagsState, { mutateTags }] = useContext(TagsContext)
   const [getThemeState, { setTheme }] = useTheme()
-  const [data, { mutate }] = createResource(fetchTags)
 
   return (
     <div class={styles['settings']}>
@@ -32,7 +25,7 @@ export default function Settings() {
         }
       >
         <h2>Tags</h2>
-        <TagsTable tags={data()} mutateTags={mutate} />
+        <TagsTable tags={tagsState().tags()} mutateTags={mutateTags} />
         <div class={styles['settings__theme-container']}>
           <h2>Theme</h2>
           <fieldset

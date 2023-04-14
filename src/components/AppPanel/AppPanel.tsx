@@ -31,7 +31,7 @@ export default function AppPanel(props: Props) {
           })}
           onClick={() => props.setAppContext('todo')}
         >
-          Todo
+          <span>Todo</span>
         </div>
         <div
           class={classnames(styles['app-panel__menu-item'], {

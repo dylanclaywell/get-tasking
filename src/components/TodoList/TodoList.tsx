@@ -4,6 +4,7 @@ import {
   createSignal,
   Index,
   Suspense,
+  useContext,
 } from 'solid-js'
 import { format } from 'date-fns'
 import { debounce } from 'debounce'
@@ -21,6 +22,7 @@ import styles from './TodoList.module.css'
 import { invoke } from '@tauri-apps/api'
 import { TodoItem, TodoItemModel } from '../../types/Models'
 import { UpdateTodoItemArgs } from '../../types/Operations'
+import { TagsContext } from '../../contexts/Tags'
 
 function padDateComponent(component: number) {
   return component < 10 ? `0${component}` : component
@@ -92,32 +94,12 @@ async function fetchTodoItems({
   })
 }
 
-async function fetchTags({ uid }: { uid: string | null }) {
-  const response: {
-    data: {
-      tags: Tag[]
-    }
-  } = {
-    data: {
-      tags: [
-        {
-          id: '1',
-          name: 'Groceries',
-          color: '#ff0000',
-        },
-      ],
-    },
-  }
-
-  if (!response || 'errors' in response) {
-    console.error('Error getting tags')
-    return
-  }
-
-  return response
+async function fetchTags() {
+  return await invoke('get_tags')
 }
 
 export default function TodoList() {
+  const [tagsState] = useContext(TagsContext)
   const [theme] = useTheme()
   const [getPanelIsClosing, setPanelIsClosing] = createSignal(false)
   const [getCurrentDate, setCurrentDate] = createSignal<Date>(new Date())
@@ -331,7 +313,7 @@ export default function TodoList() {
           isClosing={getPanelIsClosing()}
           setIsClosing={setPanelIsClosing}
           isOpen={Boolean(getSelectedItem())}
-          tags={tagsData()?.data.tags ?? []}
+          tags={tagsState().tags() ?? []}
           item={getSelectedItem() ?? undefined}
           updateTodoItem={updateTodoItem}
           onClose={() => {
