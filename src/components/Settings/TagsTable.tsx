@@ -93,15 +93,7 @@ export default function TagsTable(props: Props) {
   const deleteTag = async (id: string) => {
     await invoke('delete_tag', { id })
 
-    console.log('delete tag', id)
-
-    props.mutateTags((prev) => {
-      console.log(
-        'new',
-        prev?.filter((tag) => tag.id !== id)
-      )
-      return prev?.filter((tag) => tag.id !== id)
-    })
+    props.mutateTags((prev) => prev?.filter((tag) => tag.id !== id))
   }
 
   const addError = (name: keyof Errors, id: string) => {

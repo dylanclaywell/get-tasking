@@ -1,5 +1,4 @@
 import { createResource, Suspense, useContext } from 'solid-js'
-import { invoke } from '@tauri-apps/api'
 
 import { useTheme } from '../../contexts/Theme'
 import SkeletonSettings from '../SkeletonSettings'
@@ -26,7 +25,7 @@ export default function Settings() {
       >
         <h2>Tags</h2>
         <TagsTable tags={tagsState().tags()} mutateTags={mutateTags} />
-        <div class={styles['settings__theme-container']}>
+        {/* <div class={styles['settings__theme-container']}>
           <h2>Theme</h2>
           <fieldset
             class={styles['settings__radio-buttons']}
@@ -58,7 +57,7 @@ export default function Settings() {
               label="Neumorphic"
             />
           </fieldset>
-        </div>
+        </div> */}
       </Suspense>
     </div>
   )

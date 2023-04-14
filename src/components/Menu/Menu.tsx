@@ -1,4 +1,4 @@
-import { createEffect, JSX, onCleanup, Show } from 'solid-js'
+import { JSX, Show } from 'solid-js'
 import { Portal } from 'solid-js/web'
 import { useKeyboardHandler } from '../../contexts/App'
 

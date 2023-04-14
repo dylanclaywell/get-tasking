@@ -1,10 +1,10 @@
 .tag-table {
-  border: 1px solid var(--gray-300);
+  border: 1px solid var(--gray-3);
   border-radius: var(--rounded-md);
 }
 
 .dark {
-  border-color: var(--gray-800);
+  border-color: var(--gray-3);
 }
 
 .tag-table-row {
@@ -13,19 +13,19 @@
 }
 
 .tag-table-row > div:not(:last-child) {
-  border-right: 1px solid var(--gray-300);
+  border-right: 1px solid var(--gray-3);
 }
 
 .tag-table-row.dark > div:not(:last-child) {
-  border-right: 1px solid var(--gray-800);
+  border-right: 1px solid var(--gray-3);
 }
 
 .tag-table-row:not(:last-child) {
-  border-bottom: 1px solid var(--gray-300);
+  border-bottom: 1px solid var(--gray-3);
 }
 
 .tag-table-row:not(:last-child).dark {
-  border-bottom: 1px solid var(--gray-800);
+  border-bottom: 1px solid var(--gray-3);
 }
 
 .tag-table-row:first-child > div:first-child > input {
@@ -86,7 +86,7 @@
 }
 
 .tag-table-add-row.dark:hover {
-  background-color: var(--gray-800);
+  background-color: var(--gray-3);
   color: var(--gray-600);
 }
 

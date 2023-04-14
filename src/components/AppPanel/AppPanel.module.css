@@ -14,6 +14,7 @@
 .app-panel--neu {
   border: none;
   padding: 1rem;
+  background-color: var(--default-backround-color);
 }
 
 .app-panel__menu-item {
@@ -35,6 +36,14 @@
   border-radius: var(--rounded-full);
   border-left: 1px solid rgb(235, 235, 235);
   border-top: 1px solid rgb(235, 235, 235);
+  padding-left: 1rem;
+  background-color: #818181;
+  color: transparent;
+  text-shadow: 2px 2px 3px rgba(255, 255, 255, 0.5);
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+  font-weight: 800;
 }
 
 .app-panel__menu-item--active {
@@ -47,8 +56,21 @@
   box-shadow: var(--shadow-neu--inset);
   border-right: 1px solid rgb(234, 234, 234);
   border-bottom: 1px solid rgb(234, 234, 234);
+  background-color: #818181;
+  color: transparent;
+  text-shadow: 2px 2px 3px rgba(255, 255, 255, 0.5);
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+  font-weight: 800;
 }
 
 .app-panel__menu-item--neu:hover {
-  background-color: transparent;
+  background-color: var(--primary-color);
+  color: transparent;
+  text-shadow: 2px 2px 3px rgba(255, 255, 255, 0.5);
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+  font-weight: 800;
 }
