@@ -25,10 +25,14 @@ fn main() {
             controllers::todo_items::uncomplete_todo_item,
             controllers::todo_items::update_todo_item,
             controllers::todo_items::delete_todo_item,
+            controllers::todo_items::add_tag_to_todo_item,
+            controllers::todo_items::remove_tag_from_todo_item,
+            controllers::todo_items::get_todo_item_tags,
             controllers::tags::get_tags,
             controllers::tags::create_tag,
             controllers::tags::update_tag,
             controllers::tags::delete_tag,
+            database::create_tables,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

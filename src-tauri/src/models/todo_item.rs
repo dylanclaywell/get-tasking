@@ -1,6 +1,7 @@
-use crate::database;
+use crate::models::tag;
 use serde::{Deserialize, Serialize};
 use sqlite::State;
+use uuid::Uuid;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct TodoItem {
@@ -17,37 +18,8 @@ pub struct TodoItem {
   pub timezone_created: String,
 }
 
-fn create_todo_items_folder() {
-  let connection = sqlite::open("./database.db").unwrap();
-
-  let statement = String::from(
-    "
-      CREATE TABLE todoItems (
-        id TEXT NOT NULL UNIQUE,
-        title TEXT NOT NULL,
-        description TEXT,
-        notes TEXT,
-        isCompleted TEXT NOT NULL CHECK(isCompleted in ('true', 'false')),
-        dateCompleted TEXT,
-        timeCompleted TEXT,
-        timezoneCompleted TEXT,
-        dateCreated TEXT NOT NULL,
-        timeCreated TEXT NOT NULL,
-        timezoneCreated TEXT NOT NULL,
-        PRIMARY KEY(id)
-      );
-    ",
-  );
-
-  connection.execute(statement).unwrap();
-}
-
 pub fn get_all(date_completed: String) -> Vec<TodoItem> {
   let connection = sqlite::open("./database.db").unwrap();
-
-  if !database::table_exists(String::from("todoItems")) {
-    create_todo_items_folder();
-  }
 
   let mut todo_items = Vec::new();
 
@@ -113,10 +85,6 @@ pub fn create(
   time_created: String,
   timezone_created: String,
 ) -> TodoItem {
-  if !database::table_exists(String::from("todoItems")) {
-    create_todo_items_folder();
-  }
-
   let connection = sqlite::open("./database.db").unwrap();
   let mut statement = connection
     .prepare(
@@ -179,10 +147,6 @@ pub fn complete(
   time_completed: String,
   timezone_completed: String,
 ) {
-  if !database::table_exists(String::from("todoItems")) {
-    create_todo_items_folder();
-  }
-
   let connection = sqlite::open("./database.db").unwrap();
   let mut statement = connection
     .prepare(
@@ -213,10 +177,6 @@ pub fn complete(
 }
 
 pub fn uncomplete(id: String) {
-  if !database::table_exists(String::from("todoItems")) {
-    create_todo_items_folder();
-  }
-
   let connection = sqlite::open("./database.db").unwrap();
   let mut statement = connection
     .prepare(
@@ -246,10 +206,6 @@ pub fn update(
   description: Option<String>,
   notes: Option<String>,
 ) {
-  if !database::table_exists(String::from("todoItems")) {
-    create_todo_items_folder();
-  }
-
   let mut conditions: Vec<String> = Vec::new();
 
   let parameter_mapping = vec![
@@ -306,10 +262,6 @@ pub fn update(
 }
 
 pub fn delete(id: String) {
-  if !database::table_exists(String::from("todoItems")) {
-    create_todo_items_folder();
-  }
-
   let connection = sqlite::open("./database.db").unwrap();
   let mut statement = connection
     .prepare(
@@ -326,4 +278,88 @@ pub fn delete(id: String) {
 
   println!("Deleting todo item");
   println!("  - id: {}", id);
+}
+
+pub fn add_tag(todo_item_id: String, tag_id: String) {
+  let todo_item_tag_id = Uuid::new_v4().to_string();
+  let connection = sqlite::open("./database.db").unwrap();
+  let mut statement = connection
+    .prepare(
+      "
+        insert into todoItemsTags (
+          id,
+          todoItemId,
+          tagId
+        ) values (
+          ?,
+          ?,
+          ?
+        )
+      ",
+    )
+    .unwrap();
+
+  statement.bind(1, &*todo_item_tag_id).unwrap();
+  statement.bind(2, &*todo_item_id).unwrap();
+  statement.bind(3, &*tag_id).unwrap();
+
+  statement.next().unwrap();
+
+  println!("Adding tag to todo item");
+  println!("  - id: {}", todo_item_id);
+  println!("  - tagId: {}", tag_id);
+}
+
+pub fn remove_tag(todo_item_id: String, tag_id: String) {
+  let connection = sqlite::open("./database.db").unwrap();
+  let mut statement = connection
+    .prepare(
+      "
+        delete from todoItemsTags
+        where
+          todoItemId = ?
+          and tagId = ?
+      ",
+    )
+    .unwrap();
+
+  statement.bind(1, &*todo_item_id).unwrap();
+  statement.bind(2, &*tag_id).unwrap();
+
+  statement.next().unwrap();
+
+  println!("Removing tag from todo item");
+  println!("  - id: {}", todo_item_id);
+  println!("  - tagId: {}", tag_id);
+}
+
+pub fn get_tags(id: String) -> Vec<tag::Tag> {
+  let connection = sqlite::open("./database.db").unwrap();
+
+  let mut tags: Vec<tag::Tag> = Vec::new();
+  let mut tag_ids: Vec<String> = Vec::new();
+
+  let mut statement = connection
+    .prepare(
+      "
+      select
+        tagId
+      from todoItemsTags
+      where
+        todoItemId = ?
+    ",
+    )
+    .unwrap();
+
+  statement.bind(1, &*id).unwrap();
+
+  while let State::Row = statement.next().unwrap() {
+    tag_ids.push(statement.read::<String>(0).unwrap())
+  }
+
+  for tag_id in tag_ids {
+    tags.push(tag::get(tag_id));
+  }
+
+  return tags;
 }

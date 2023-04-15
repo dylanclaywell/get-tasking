@@ -40,44 +40,41 @@ export default function TagsTable(props: Props) {
   })
   const [getThemeState] = useTheme()
 
-  const onChangeInput = debounce(
-    async (
-      id: string,
-      name: keyof Omit<Tag, 'id'>,
-      value: string,
-      validation?: RegExp
-    ) => {
-      if (validation && !validation.test(value)) {
-        addError(name, id)
-        return
-      }
+  const onBlur = async (
+    id: string,
+    name: keyof Omit<Tag, 'id'>,
+    value: string,
+    validation?: RegExp
+  ) => {
+    if (validation && !validation.test(value)) {
+      addError(name, id)
+      return
+    }
 
-      removeError(name, id)
+    removeError(name, id)
 
-      const tags = cloneDeep(props.tags)
-      const tag = tags?.find((tag) => tag.id === id)
-      const tagIndex = tags?.findIndex((tag) => tag.id === id)
+    const tags = cloneDeep(props.tags)
+    const tag = tags?.find((tag) => tag.id === id)
+    const tagIndex = tags?.findIndex((tag) => tag.id === id)
 
-      if (!tags || !tag || tagIndex === undefined) {
-        console.error('Tag not found')
-        return
-      }
+    if (!tags || !tag || tagIndex === undefined) {
+      console.error('Tag not found')
+      return
+    }
 
-      await invoke('update_tag', {
-        id,
-        ...(name === 'name' && { name: value }),
-        ...(name === 'color' && { color: value }),
-      })
+    await invoke('update_tag', {
+      id,
+      ...(name === 'name' && { name: value }),
+      ...(name === 'color' && { color: value }),
+    })
 
-      tags.splice(tagIndex, 1, {
-        ...tag,
-        [name]: value,
-      })
+    tags.splice(tagIndex, 1, {
+      ...tag,
+      [name]: value,
+    })
 
-      props.mutateTags(() => tags)
-    },
-    500
-  )
+    props.mutateTags(() => tags)
+  }
 
   const addTagRow = async () => {
     const newTag = JSON.parse(
@@ -122,7 +119,7 @@ export default function TagsTable(props: Props) {
         [styles['dark']]: getThemeState()?.theme === 'dark',
       }}
     >
-      <For each={props.tags}>
+      <Index each={props.tags}>
         {(tag) => (
           <div
             class={styles['tag-table-row']}
@@ -134,40 +131,43 @@ export default function TagsTable(props: Props) {
               <input
                 class={styles['tag-table-input']}
                 classList={{
-                  [styles['tag-table-input-error']]: hasError('name', tag.id),
+                  [styles['tag-table-input-error']]: hasError('name', tag().id),
                 }}
-                onInput={(e) => {
-                  onChangeInput(tag.id, 'name', e.currentTarget.value)
+                onBlur={(e) => {
+                  onBlur(tag().id, 'name', e.currentTarget.value)
                 }}
-                value={tag.name}
+                value={tag().name}
               />
             </div>
             <div class={styles['tag-color']}>
               <div
                 class={styles['tag-color-sample']}
-                style={{ 'background-color': tag.color }}
+                style={{ 'background-color': tag().color }}
               />
               <input
                 class={classnames(styles['tag-table-input'], {
-                  [styles['tag-table-input-error']]: hasError('color', tag.id),
+                  [styles['tag-table-input-error']]: hasError(
+                    'color',
+                    tag().id
+                  ),
                 })}
-                onInput={(e) => {
-                  onChangeInput(
-                    tag.id,
+                onBlur={(e) => {
+                  onBlur(
+                    tag().id,
                     'color',
                     e.currentTarget.value,
                     /^#[A-Fa-f0-9]{6}$/
                   )
                 }}
-                value={tag.color}
+                value={tag().color}
               />
               <div class={styles['delete-icon']}>
-                <IconButton onClick={() => deleteTag(tag.id)} icon="trash2" />
+                <IconButton onClick={() => deleteTag(tag().id)} icon="trash2" />
               </div>
             </div>
           </div>
         )}
-      </For>
+      </Index>
       <button
         class={classnames(styles['tag-table-add-row'], {
           [styles['dark']]: getThemeState()?.theme === 'dark',

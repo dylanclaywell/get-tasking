@@ -1,4 +1,3 @@
-use crate::database;
 use serde::{Deserialize, Serialize};
 use sqlite::State;
 
@@ -9,29 +8,8 @@ pub struct Tag {
     pub name: String,
 }
 
-fn create_tags_folder() {
-    let connection = sqlite::open("./database.db").unwrap();
-
-    let statement = String::from(
-        "
-      CREATE TABLE tags (
-        id TEXT NOT NULL UNIQUE,
-        color TEXT NOT NULL,
-        name TEXT NOT NULL,
-        PRIMARY KEY(id)
-      );
-    ",
-    );
-
-    connection.execute(statement).unwrap();
-}
-
 pub fn get_all() -> Vec<Tag> {
     let connection = sqlite::open("./database.db").unwrap();
-
-    if !database::table_exists(String::from("tags")) {
-        create_tags_folder();
-    }
 
     let mut tags = Vec::new();
 
@@ -60,11 +38,34 @@ pub fn get_all() -> Vec<Tag> {
     return tags;
 }
 
-pub fn create(id: String, name: String, color: String) -> Tag {
-    if !database::table_exists(String::from("tags")) {
-        create_tags_folder();
-    }
+pub fn get(id: String) -> Tag {
+    let connection = sqlite::open("./database.db").unwrap();
 
+    let mut statement = connection
+        .prepare(
+            "
+        select
+          id,
+          color,
+          name
+        from tags
+        where
+            id = ?
+      ",
+        )
+        .unwrap();
+
+    statement.bind(1, &*id).unwrap();
+    statement.next().unwrap();
+
+    return Tag {
+        id: statement.read::<String>(0).unwrap(),
+        color: statement.read::<String>(1).unwrap(),
+        name: statement.read::<String>(2).unwrap(),
+    };
+}
+
+pub fn create(id: String, name: String, color: String) -> Tag {
     let connection = sqlite::open("./database.db").unwrap();
     let mut statement = connection
         .prepare(
@@ -101,10 +102,6 @@ pub fn create(id: String, name: String, color: String) -> Tag {
 }
 
 pub fn update(id: String, name: Option<String>, color: Option<String>) {
-    if !database::table_exists(String::from("tags")) {
-        create_tags_folder();
-    }
-
     let mut conditions: Vec<String> = Vec::new();
 
     let parameter_mapping = vec![
@@ -151,10 +148,6 @@ pub fn update(id: String, name: Option<String>, color: Option<String>) {
 }
 
 pub fn delete(id: String) {
-    if !database::table_exists(String::from("tags")) {
-        create_tags_folder();
-    }
-
     let connection = sqlite::open("./database.db").unwrap();
     let mut statement = connection
         .prepare(

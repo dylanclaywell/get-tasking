@@ -1,19 +1,65 @@
-use sqlite::State;
-
-pub fn table_exists(table_name: String) -> bool {
+fn create_tags_table() -> bool {
   let connection = sqlite::open("./database.db").unwrap();
-  let mut statement = connection
-    .prepare(
-      "
-        select count(*) as count from sqlite_master
-        where type = 'table' and name = ?
-      ",
-    )
-    .unwrap();
-  statement.bind(1, &*table_name).unwrap();
-  let mut count = String::from("0");
-  while let State::Row = statement.next().unwrap() {
-    count = statement.read::<String>(0).unwrap_or(String::from("0"));
-  }
-  return count != "0";
+
+  let statement = String::from(
+    "
+    CREATE TABLE if not exists tags (
+      id TEXT NOT NULL UNIQUE,
+      color TEXT NOT NULL,
+      name TEXT NOT NULL,
+      PRIMARY KEY(id)
+    );
+  ",
+  );
+
+  return connection.execute(statement).is_ok();
+}
+
+fn create_todo_items_table() -> bool {
+  let connection = sqlite::open("./database.db").unwrap();
+
+  let statement = String::from(
+    "
+      CREATE TABLE if not exists todoItems (
+        id TEXT NOT NULL UNIQUE,
+        title TEXT NOT NULL,
+        description TEXT,
+        notes TEXT,
+        isCompleted TEXT NOT NULL CHECK(isCompleted in ('true', 'false')),
+        dateCompleted TEXT,
+        timeCompleted TEXT,
+        timezoneCompleted TEXT,
+        dateCreated TEXT NOT NULL,
+        timeCreated TEXT NOT NULL,
+        timezoneCreated TEXT NOT NULL,
+        PRIMARY KEY(id)
+      );
+    ",
+  );
+
+  return connection.execute(statement).is_ok();
+}
+
+fn create_todo_items_tags_table() -> bool {
+  let connection = sqlite::open("./database.db").unwrap();
+
+  let statement = String::from(
+    "
+      CREATE TABLE if not exists todoItemsTags (
+        id TEXT NOT NULL UNIQUE,
+        todoItemId TEXT NOT NULL,
+        tagId TEXT NOT NULL,
+        PRIMARY KEY(id),
+        FOREIGN KEY(todoItemId) REFERENCES todoItems(id),
+        FOREIGN KEY(tagId) REFERENCES tags(id)
+      );
+    ",
+  );
+
+  return connection.execute(statement).is_ok();
+}
+
+#[tauri::command]
+pub fn create_tables() -> bool {
+  return create_tags_table() && create_todo_items_table() && create_todo_items_tags_table();
 }

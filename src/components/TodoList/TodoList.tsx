@@ -56,6 +56,12 @@ function getDateFromComponents({
   return new Date(`${date}T${time}${timezone}`)
 }
 
+async function fetchTodoItemTags(id: string) {
+  return JSON.parse(
+    await invoke('get_todo_item_tags', { todoItemId: id })
+  ) as Tag[]
+}
+
 async function fetchTodoItems({
   currentDate,
 }: {
@@ -67,31 +73,33 @@ async function fetchTodoItems({
     })
   ) as TodoItemModel[]
 
-  return todoItems.map((todoItem) => {
-    return {
-      id: todoItem.id,
-      title: todoItem.title,
-      description: todoItem.description,
-      dateCreated: getDateFromComponents({
-        date: todoItem.date_created,
-        time: todoItem.time_created,
-        timezone: todoItem.timezone_created,
-      }),
-      dateCompleted:
-        todoItem.date_completed &&
-        todoItem.time_completed &&
-        todoItem.timezone_completed
-          ? getDateFromComponents({
-              date: todoItem.date_completed,
-              time: todoItem.time_completed,
-              timezone: todoItem.timezone_completed,
-            })
-          : null,
-      notes: todoItem.notes,
-      tags: [],
-      isCompleted: todoItem.is_completed,
-    }
-  })
+  return await Promise.all(
+    todoItems.map(async (todoItem) => {
+      return {
+        id: todoItem.id,
+        title: todoItem.title,
+        description: todoItem.description,
+        dateCreated: getDateFromComponents({
+          date: todoItem.date_created,
+          time: todoItem.time_created,
+          timezone: todoItem.timezone_created,
+        }),
+        dateCompleted:
+          todoItem.date_completed &&
+          todoItem.time_completed &&
+          todoItem.timezone_completed
+            ? getDateFromComponents({
+                date: todoItem.date_completed,
+                time: todoItem.time_completed,
+                timezone: todoItem.timezone_completed,
+              })
+            : null,
+        notes: todoItem.notes,
+        tags: await fetchTodoItemTags(todoItem.id),
+        isCompleted: todoItem.is_completed,
+      }
+    })
+  )
 }
 
 async function fetchTags() {
@@ -103,7 +111,6 @@ export default function TodoList() {
   const [theme] = useTheme()
   const [getPanelIsClosing, setPanelIsClosing] = createSignal(false)
   const [getCurrentDate, setCurrentDate] = createSignal<Date>(new Date())
-  const [tagsData] = createResource(fetchTags)
   const [todoItems, { mutate }] = createResource(
     () => ({ currentDate: getCurrentDate() }),
     fetchTodoItems
@@ -319,6 +326,7 @@ export default function TodoList() {
           onClose={() => {
             setSelectedItemId(undefined)
           }}
+          mutateTodoItems={mutate}
         />
       }
     </>

@@ -1,4 +1,4 @@
-import { createEffect, createSignal, onCleanup } from 'solid-js'
+import { createEffect, createSignal, onCleanup, Setter } from 'solid-js'
 import { format } from 'date-fns'
 
 import { TodoItem } from '../../types/Models'
@@ -11,6 +11,7 @@ import { useTheme } from '../../contexts/Theme'
 import styles from './TodoEditPanel.module.css'
 import { UpdateTodoItemArgs } from '../../types/Operations'
 import { useKeyboardHandler } from '../../contexts/App'
+import { invoke } from '@tauri-apps/api'
 
 interface Tag {
   id: string
@@ -21,6 +22,7 @@ interface Tag {
 export interface Props {
   item: TodoItem | undefined
   tags: Tag[]
+  mutateTodoItems: Setter<TodoItem[] | undefined>
   updateTodoItem: (
     id: string,
     fieldName: keyof UpdateTodoItemArgs,
@@ -178,11 +180,63 @@ export default function TodoEditPanel(props: Props) {
             value: tag.id,
           }))}
           onChange={async (newValues: Option<string>[]) => {
-            // props.updateTodoItem(
-            //   props.item.id,
-            //   'tags',
-            //   newValues.map((v) => ({ id: v.value }))
-            // )
+            const todoItemId = props.item?.id
+            if (!todoItemId) return
+
+            const existingTags = props.item?.tags ?? []
+            const tagIds = newValues.map((v) => v.value)
+            const tagsToAdd = props.tags.filter(
+              (tag) =>
+                tagIds.includes(tag.id) &&
+                !existingTags.some((t) => t.id === tag.id)
+            )
+            const tagsToRemove = existingTags.filter(
+              (tag) => !tagIds.includes(tag.id)
+            )
+
+            for (const tag of tagsToAdd) {
+              await invoke('add_tag_to_todo_item', {
+                todoItemId,
+                tagId: tag.id,
+              })
+
+              props.mutateTodoItems((todoItems) => {
+                if (!todoItems) return todoItems
+
+                return todoItems.map((t) => {
+                  if (t.id === todoItemId) {
+                    return {
+                      ...t,
+                      tags: [...t.tags, ...tagsToAdd],
+                    }
+                  }
+
+                  return t
+                })
+              })
+            }
+
+            for (const tag of tagsToRemove) {
+              await invoke('remove_tag_from_todo_item', {
+                todoItemId,
+                tagId: tag.id,
+              })
+
+              props.mutateTodoItems((todoItems) => {
+                if (!todoItems) return todoItems
+
+                return todoItems.map((t) => {
+                  if (t.id === todoItemId) {
+                    return {
+                      ...t,
+                      tags: t.tags.filter((t) => t.id !== tag.id),
+                    }
+                  }
+
+                  return t
+                })
+              })
+            }
           }}
           values={props.item?.tags.map((tag) => tag.id) ?? []}
         />

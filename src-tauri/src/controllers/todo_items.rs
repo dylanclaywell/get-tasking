@@ -47,3 +47,18 @@ pub fn update_todo_item(
 pub fn delete_todo_item(id: String) {
   todo_item::delete(id);
 }
+
+#[tauri::command]
+pub fn add_tag_to_todo_item(todo_item_id: String, tag_id: String) {
+  todo_item::add_tag(todo_item_id, tag_id);
+}
+
+#[tauri::command]
+pub fn remove_tag_from_todo_item(todo_item_id: String, tag_id: String) {
+  todo_item::remove_tag(todo_item_id, tag_id);
+}
+
+#[tauri::command]
+pub fn get_todo_item_tags(todo_item_id: String) -> String {
+  return serde_json::to_string(&todo_item::get_tags(todo_item_id)).unwrap();
+}

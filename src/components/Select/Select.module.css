@@ -37,7 +37,7 @@
   min-height: 3.812rem;
   display: flex;
   flex-wrap: wrap;
-  cursor: text;
+  cursor: default;
 }
 
 .select__input--multi__value {
@@ -51,6 +51,10 @@
 .select__menu-item--selected {
   background-color: var(--primary-color);
   color: white;
+}
+
+.select__menu-item--selected:hover {
+  color: black;
 }
 
 .multi-select-selected:hover {
