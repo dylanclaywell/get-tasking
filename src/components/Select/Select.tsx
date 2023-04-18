@@ -46,15 +46,6 @@ export default function Select<
   ValueType extends string | number | string[] | undefined
 >(props: Props<ValueType>) {
   const [theme] = useTheme()
-  const [getMultiSelectValues, setMultiSelectValues] = createSignal<
-    Option<ValueType>[]
-  >(
-    'values' in props
-      ? props.values
-          .map((value) => props.options.find((o) => o.value === value)!)
-          .filter(Boolean) ?? []
-      : []
-  )
   const [getInputRef, setInputRef] = createSignal<HTMLDivElement>()
   const [getIsMenuOpen, setIsMenuOpen] = createSignal(false)
   const [getIsFocused, setIsFocused] = createSignal(false)
@@ -154,20 +145,22 @@ export default function Select<
               })}
               onClick={() => {
                 if ('values' in props) {
-                  setMultiSelectValues((values) => {
-                    let clonedValues = cloneDeep(values)
-
-                    if (clonedValues.some((v) => option.value === v.value)) {
-                      clonedValues = clonedValues.filter(
-                        (v) => v.value !== option.value
+                  const values =
+                    props.values
+                      .map((value) =>
+                        props.options.find((o) => o.value === value)
                       )
-                      return clonedValues
-                    }
+                      .filter((v): v is Option<ValueType> => Boolean(v)) ?? []
+                  let clonedValues = cloneDeep(values)
 
-                    return [...clonedValues, option]
-                  })
+                  if (clonedValues.some((v) => option.value === v.value)) {
+                    clonedValues = clonedValues.filter(
+                      (v) => v.value !== option.value
+                    )
+                    props.onChange(clonedValues)
+                  }
 
-                  props.onChange(getMultiSelectValues())
+                  props.onChange([...clonedValues, option])
                 } else {
                   props.onChange(option)
                 }
