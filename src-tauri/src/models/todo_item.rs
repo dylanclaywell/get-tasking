@@ -358,7 +358,9 @@ pub fn get_tags(id: String) -> Vec<tag::Tag> {
   }
 
   for tag_id in tag_ids {
-    tags.push(tag::get(tag_id));
+    if let Ok(tag) = tag::get(tag_id) {
+      tags.push(tag);
+    }
   }
 
   return tags;

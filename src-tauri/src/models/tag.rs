@@ -38,7 +38,7 @@ pub fn get_all() -> Vec<Tag> {
     return tags;
 }
 
-pub fn get(id: String) -> Tag {
+pub fn get(id: String) -> Result<Tag, ()> {
     let connection = sqlite::open("./database.db").unwrap();
 
     let mut statement = connection
@@ -58,11 +58,15 @@ pub fn get(id: String) -> Tag {
     statement.bind(1, &*id).unwrap();
     statement.next().unwrap();
 
-    return Tag {
-        id: statement.read::<String>(0).unwrap(),
-        color: statement.read::<String>(1).unwrap(),
-        name: statement.read::<String>(2).unwrap(),
-    };
+    while let Ok(State::Row) = statement.next() {
+        return Ok(Tag {
+            id: statement.read::<String>(0).unwrap(),
+            color: statement.read::<String>(1).unwrap(),
+            name: statement.read::<String>(2).unwrap(),
+        });
+    }
+
+    Err(())
 }
 
 pub fn create(id: String, name: String, color: String) -> Tag {
