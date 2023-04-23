@@ -1,8 +1,9 @@
-fn create_tags_table() -> bool {
-  let connection = sqlite::open("./database.db").unwrap();
+use sqlite::Connection;
+use sqlite::Error;
 
-  let statement = String::from(
-    "
+fn create_tags_table(connection: &Connection) -> bool {
+    let statement = String::from(
+        "
     CREATE TABLE if not exists tags (
       id TEXT NOT NULL UNIQUE,
       color TEXT NOT NULL,
@@ -10,16 +11,14 @@ fn create_tags_table() -> bool {
       PRIMARY KEY(id)
     );
   ",
-  );
+    );
 
-  return connection.execute(statement).is_ok();
+    return connection.execute(statement).is_ok();
 }
 
-fn create_todo_items_table() -> bool {
-  let connection = sqlite::open("./database.db").unwrap();
-
-  let statement = String::from(
-    "
+fn create_todo_items_table(connection: &Connection) -> bool {
+    let statement = String::from(
+        "
       CREATE TABLE if not exists todoItems (
         id TEXT NOT NULL UNIQUE,
         title TEXT NOT NULL,
@@ -35,16 +34,14 @@ fn create_todo_items_table() -> bool {
         PRIMARY KEY(id)
       );
     ",
-  );
+    );
 
-  return connection.execute(statement).is_ok();
+    return connection.execute(statement).is_ok();
 }
 
-fn create_todo_items_tags_table() -> bool {
-  let connection = sqlite::open("./database.db").unwrap();
-
-  let statement = String::from(
-    "
+fn create_todo_items_tags_table(connection: &Connection) -> bool {
+    let statement = String::from(
+        "
       CREATE TABLE if not exists todoItemsTags (
         id TEXT NOT NULL UNIQUE,
         todoItemId TEXT NOT NULL,
@@ -54,12 +51,28 @@ fn create_todo_items_tags_table() -> bool {
         FOREIGN KEY(tagId) REFERENCES tags(id)
       );
     ",
-  );
+    );
 
-  return connection.execute(statement).is_ok();
+    return connection.execute(statement).is_ok();
 }
 
-#[tauri::command]
-pub fn create_tables() -> bool {
-  return create_tags_table() && create_todo_items_table() && create_todo_items_tags_table();
+pub fn create_tables(connection: &Connection) -> bool {
+    return create_tags_table(connection)
+        && create_todo_items_table(connection)
+        && create_todo_items_tags_table(connection);
+}
+
+pub fn initialize_database(app_handle: &tauri::AppHandle) -> Result<Connection, Error> {
+    let path = app_handle.path_resolver().app_data_dir().unwrap();
+    let path_string = path.display();
+
+    if !path.exists() {
+        std::fs::create_dir_all(&path).unwrap();
+    }
+
+    let connection = sqlite::open(format!("{}{}", path_string, String::from("/database.db")))?;
+
+    create_tables(&connection);
+
+    return Ok(connection);
 }

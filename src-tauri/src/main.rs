@@ -4,7 +4,6 @@
 )]
 
 use tauri::Manager;
-use window_shadows::set_shadow;
 
 mod controllers;
 pub mod database;
@@ -13,8 +12,7 @@ pub mod models;
 fn main() {
     tauri::Builder::default()
         .setup(|app| {
-            let main_window = app.get_window("main").unwrap();
-            set_shadow(&main_window, true).expect("Unsupported platform!");
+            let handle = app.handle();
 
             Ok(())
         })
@@ -32,7 +30,6 @@ fn main() {
             controllers::tags::create_tag,
             controllers::tags::update_tag,
             controllers::tags::delete_tag,
-            database::create_tables,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

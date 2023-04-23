@@ -1,5 +1,7 @@
+use crate::database;
 use serde::{Deserialize, Serialize};
 use sqlite::State;
+use tauri::AppHandle;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Tag {
@@ -8,8 +10,8 @@ pub struct Tag {
     pub name: String,
 }
 
-pub fn get_all() -> Vec<Tag> {
-    let connection = sqlite::open("./database.db").unwrap();
+pub fn get_all(app_handle: &AppHandle) -> Result<Vec<Tag>, sqlite::Error> {
+    let connection = database::initialize_database(app_handle)?;
 
     let mut tags = Vec::new();
 
@@ -35,11 +37,11 @@ pub fn get_all() -> Vec<Tag> {
         tags.push(tag)
     }
 
-    return tags;
+    Ok(tags)
 }
 
-pub fn get(id: String) -> Result<Tag, ()> {
-    let connection = sqlite::open("./database.db").unwrap();
+pub fn get(app_handle: &AppHandle, id: String) -> Result<Tag, sqlite::Error> {
+    let connection = database::initialize_database(app_handle)?;
 
     let mut statement = connection
         .prepare(
@@ -66,11 +68,20 @@ pub fn get(id: String) -> Result<Tag, ()> {
         });
     }
 
-    Err(())
+    Err(sqlite::Error {
+        code: Some(0001),
+        message: Some("Tag not found".to_string()),
+    })
 }
 
-pub fn create(id: String, name: String, color: String) -> Tag {
-    let connection = sqlite::open("./database.db").unwrap();
+pub fn create(
+    app_handle: &AppHandle,
+    id: String,
+    name: String,
+    color: String,
+) -> Result<Tag, sqlite::Error> {
+    let connection = database::initialize_database(app_handle)?;
+
     let mut statement = connection
         .prepare(
             "
@@ -102,10 +113,15 @@ pub fn create(id: String, name: String, color: String) -> Tag {
 
     let tag = Tag { id, name, color };
 
-    tag
+    Ok(tag)
 }
 
-pub fn update(id: String, name: Option<String>, color: Option<String>) {
+pub fn update(
+    app_handle: &AppHandle,
+    id: String,
+    name: Option<String>,
+    color: Option<String>,
+) -> Result<(), sqlite::Error> {
     let mut conditions: Vec<String> = Vec::new();
 
     let parameter_mapping = vec![
@@ -132,7 +148,8 @@ pub fn update(id: String, name: Option<String>, color: Option<String>) {
     sql.push(conditions.join(" "));
     sql.push(String::from("where id = :id"));
 
-    let connection = sqlite::open("./database.db").unwrap();
+    let connection = database::initialize_database(app_handle)?;
+
     let mut statement = connection.prepare(sql.join(" ")).unwrap();
 
     statement.bind_by_name(":id", &*id).unwrap();
@@ -149,10 +166,13 @@ pub fn update(id: String, name: Option<String>, color: Option<String>) {
     println!("  - id: {}", id);
     println!("  - name: {}", name.unwrap_or(String::from("<none>")));
     println!("  - color: {}", color.unwrap_or(String::from("<none>")));
+
+    Ok(())
 }
 
-pub fn delete(id: String) {
-    let connection = sqlite::open("./database.db").unwrap();
+pub fn delete(app_handle: &AppHandle, id: String) -> Result<(), sqlite::Error> {
+    let connection = database::initialize_database(app_handle)?;
+
     let mut statement = connection
         .prepare(
             "
@@ -168,4 +188,6 @@ pub fn delete(id: String) {
 
     println!("Deleting tag");
     println!("  - id: {}", id);
+
+    Ok(())
 }

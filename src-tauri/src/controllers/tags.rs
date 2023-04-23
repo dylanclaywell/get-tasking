@@ -1,24 +1,25 @@
 use crate::models::tag;
+use tauri::AppHandle;
 use uuid::Uuid;
 
 #[tauri::command]
-pub fn get_tags() -> String {
-    return serde_json::to_string(&tag::get_all()).unwrap();
+pub fn get_tags(app_handle: AppHandle) -> String {
+    return serde_json::to_string(&tag::get_all(&app_handle).unwrap()).unwrap();
 }
 
 #[tauri::command]
-pub fn create_tag(name: String, color: String) -> String {
+pub fn create_tag(app_handle: AppHandle, name: String, color: String) -> String {
     let id = Uuid::new_v4().to_string();
-    let tag = tag::create(id, name, color);
-    return serde_json::to_string(&tag).unwrap();
+    let tag = tag::create(&app_handle, id, name, color);
+    return serde_json::to_string(&tag.unwrap()).unwrap();
 }
 
 #[tauri::command]
-pub fn update_tag(id: String, name: Option<String>, color: Option<String>) {
-    tag::update(id, name, color);
+pub fn update_tag(app_handle: AppHandle, id: String, name: Option<String>, color: Option<String>) {
+    tag::update(&app_handle, id, name, color);
 }
 
 #[tauri::command]
-pub fn delete_tag(id: String) {
-    tag::delete(id);
+pub fn delete_tag(app_handle: AppHandle, id: String) {
+    tag::delete(&app_handle, id);
 }
