@@ -16,10 +16,14 @@ pub fn create_tag(app_handle: AppHandle, name: String, color: String) -> String 
 
 #[tauri::command]
 pub fn update_tag(app_handle: AppHandle, id: String, name: Option<String>, color: Option<String>) {
-    tag::update(&app_handle, id, name, color);
+    if tag::update(&app_handle, id, name, color).is_err() {
+        println!("Failed to update tag");
+    }
 }
 
 #[tauri::command]
 pub fn delete_tag(app_handle: AppHandle, id: String) {
-    tag::delete(&app_handle, id);
+    if tag::delete(&app_handle, id).is_err() {
+        println!("Failed to delete tag");
+    }
 }

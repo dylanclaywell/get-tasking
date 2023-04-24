@@ -38,18 +38,24 @@ pub fn complete_todo_item(
     time_completed: String,
     timezone_completed: String,
 ) {
-    todo_item::complete(
+    if todo_item::complete(
         &app_handle,
         id,
         date_completed,
         time_completed,
         timezone_completed,
-    );
+    )
+    .is_err()
+    {
+        println!("Failed to complete todo item");
+    }
 }
 
 #[tauri::command]
 pub fn uncomplete_todo_item(app_handle: AppHandle, id: String) {
-    todo_item::uncomplete(&app_handle, id);
+    if todo_item::uncomplete(&app_handle, id).is_err() {
+        println!("Failed to uncomplete todo item");
+    }
 }
 
 #[tauri::command]
@@ -60,22 +66,30 @@ pub fn update_todo_item(
     description: Option<String>,
     notes: Option<String>,
 ) {
-    todo_item::update(&app_handle, id, title, description, notes);
+    if todo_item::update(&app_handle, id, title, description, notes).is_err() {
+        println!("Failed to update todo item");
+    }
 }
 
 #[tauri::command]
 pub fn delete_todo_item(app_handle: AppHandle, id: String) {
-    todo_item::delete(&app_handle, id);
+    if todo_item::delete(&app_handle, id).is_err() {
+        println!("Failed to delete todo item");
+    }
 }
 
 #[tauri::command]
 pub fn add_tag_to_todo_item(app_handle: AppHandle, todo_item_id: String, tag_id: String) {
-    todo_item::add_tag(&app_handle, todo_item_id, tag_id);
+    if todo_item::add_tag(&app_handle, todo_item_id, tag_id).is_err() {
+        println!("Failed to add tag to todo item");
+    }
 }
 
 #[tauri::command]
 pub fn remove_tag_from_todo_item(app_handle: AppHandle, todo_item_id: String, tag_id: String) {
-    todo_item::remove_tag(&app_handle, todo_item_id, tag_id);
+    if todo_item::remove_tag(&app_handle, todo_item_id, tag_id).is_err() {
+        println!("Failed to remove tag from todo item");
+    }
 }
 
 #[tauri::command]
