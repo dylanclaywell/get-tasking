@@ -58,7 +58,6 @@ pub fn get(app_handle: &AppHandle, id: String) -> Result<Tag, sqlite::Error> {
         .unwrap();
 
     statement.bind(1, &*id).unwrap();
-    statement.next().unwrap();
 
     while let Ok(State::Row) = statement.next() {
         return Ok(Tag {

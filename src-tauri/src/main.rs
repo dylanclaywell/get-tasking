@@ -2,8 +2,9 @@
     all(not(debug_assertions), target_os = "windows"),
     windows_subsystem = "windows"
 )]
-
+#[cfg(any(windows, target_os = "macos"))]
 use tauri::Manager;
+use window_shadows::set_shadow;
 
 mod controllers;
 pub mod database;
@@ -12,7 +13,8 @@ pub mod models;
 fn main() {
     tauri::Builder::default()
         .setup(|app| {
-            let handle = app.handle();
+            let window = app.get_window("main").unwrap();
+            set_shadow(&window, true).unwrap();
 
             Ok(())
         })
